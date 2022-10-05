@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react'
 import { useRouter } from "next/router";
 import { useAuth } from "../context/authUserContext";
+import { Container } from '@mantine/core';
+import Dictaphone from '../components/Dictaphone';
 
 function Dashboard() {
     const { authUser, loading, enrolled, createUserPassword } = useAuth();
@@ -21,7 +23,16 @@ function Dashboard() {
     }, [authUser, loading]);
 
     return (
-        <div>Dashboard, welcome authenticated user!</div>
+        <Container size="xl">
+          { loading ? <div>Loading...</div> : 
+            <> 
+            <h1>Dashboard</h1>
+            <h3>Welcome, {authUser.displayName} </h3>
+            <Dictaphone />
+            </>
+        }
+        </Container>
+      
     )
 }
 

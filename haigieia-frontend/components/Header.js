@@ -25,7 +25,7 @@ function HeaderComponent() {
   const { classes } = useStyles();
 
   return (
-    <Header height={70} p="md">
+    <Header height={60} p="sm">
       <Center position="apart" spacing="xl">
         <Link href="/">
         <Title order={1}>

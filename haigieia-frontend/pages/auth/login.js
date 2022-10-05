@@ -90,7 +90,7 @@ function Login() {
   };
 
   return (
-    <Container size={450} my={40}>
+    <Container size={450}>
       <Title align="center" sx={(theme) => ({ fontWeight: 900 })}>
         Welcome back!
       </Title>

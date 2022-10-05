@@ -11,7 +11,6 @@ export const ApplicationContainer = ({children}) => {
             main: {
                 background: "#f0f0f0",
                 width: "100vw",
-                height: "100vh",
             }
         }}
         fixed
