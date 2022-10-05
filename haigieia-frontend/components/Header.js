@@ -25,14 +25,14 @@ function HeaderComponent() {
   const { classes } = useStyles();
 
   return (
-    <Header height={60} p="sm">
+    <Header height={60} p="xs">
       <Center position="apart" spacing="xl">
         <Link href="/">
         <Title order={1}>
           <span
-            style={{ color: "lightSteelBlue", fontWeight: "bolder" }}
+            style={{ color: "lightSteelBlue", fontWeight: "bolder", fontFamily: "Orbitron, sans-serif" }}
           >
-            Haigieia
+            hA<span style={{ fontSize: "2.25rem"}} >i</span>gieia
           </span>
         </Title>
         </Link>
