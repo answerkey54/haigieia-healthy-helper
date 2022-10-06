@@ -1,5 +1,13 @@
 import React from "react";
-import { createStyles, Header, Center, Title, MediaQuery, Burger, useMantineTheme } from "@mantine/core";
+import {
+    createStyles,
+    Header,
+    Center,
+    Title,
+    MediaQuery,
+    Burger,
+    useMantineTheme,
+} from "@mantine/core";
 import "../styles/Header.module.css";
 import Link from "next/link";
 
@@ -43,9 +51,11 @@ function HeaderComponent({ opened, setOpened }) {
                             style={{
                                 color: "lightSteelBlue",
                                 fontWeight: "bolder",
+                                fontFamily: "Orbitron, sans-serif",
                             }}
                         >
-                            Haigieia
+                            hA<span style={{ fontSize: "2.25rem" }}>i</span>
+                            gieia
                         </span>
                     </Title>
                 </Link>

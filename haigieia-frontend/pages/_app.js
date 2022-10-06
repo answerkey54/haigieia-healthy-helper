@@ -4,6 +4,7 @@ import { NotificationsProvider } from "@mantine/notifications";
 import 'animate.css';
 import "../styles/globals.css";
 import { ApplicationContainer } from "../components/ApplicationContainer";
+import 'regenerator-runtime/runtime'
 
 function MyApp({ Component, pageProps }) {
   return (
