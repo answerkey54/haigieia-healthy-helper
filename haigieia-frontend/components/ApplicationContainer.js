@@ -24,6 +24,7 @@ export const ApplicationContainer = ({children}) => {
         header={<HeaderComponent opened={opened} setOpened={setOpened} />}
         footer={<FooterComponent/>}
         navbar={<NavbarMinimal hidden={!opened} p="md" hiddenBreakpoint="xs"  />}
+       
         >
             {children}
         </AppShell>
