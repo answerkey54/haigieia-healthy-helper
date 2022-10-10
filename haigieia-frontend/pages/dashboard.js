@@ -15,40 +15,14 @@ import {
 } from "@mantine/core";
 import Dictaphone from "../components/Dictaphone";
 
-const useStyles = createStyles((theme) => ({
-    response: {
-        float: "right",
-    },
-}));
-
 function Dashboard() {
-    const { authUser, loading, enrolled, createUserPassword } = useAuth();
+    const { authUser, loading, enrolled } = useAuth();
     const router = useRouter();
     const [text, setText] = useState("");
-    const [listening, setListening] = useState(false);
+    const [open, setOpen] = useState(false);
     const [activeListening, setActiveListening] = useState(false);
-    const { classes } = useStyles();
-
+    const [conversation, setConversation] = useState([]);
     const [Type, setType] = useState(false);
-
-    useEffect(() => {
-        if (!loading) {
-            const typed = new Typed("#typed-text", {
-                strings: [
-                    "Hi, I'm Haigieia. I'm here to help you with your physical health",
-                ],
-                startDelay: 100,
-                backSpeed: 40,
-                typeSpeed: 70,
-                backDelay: 250,
-                showCursor: false,
-            });
-
-            return () => {
-                typed.reset(false);
-            };
-        }
-    }, [loading]);
 
     useEffect(() => {
         if (!loading && !authUser && !enrolled) {
@@ -61,6 +35,50 @@ function Dashboard() {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [authUser, loading]);
+
+    // Generate a response to the user's input text using the Dialogflow API. Then display the response using Typed.js
+    useEffect(() => {
+        console.log("active listening triggered");
+        if (text !== "" && !activeListening) {
+            console.log("Completed: " + text);
+            var response = "Hello, how are you?";
+            const options = {
+                strings: [response],
+                typeSpeed: 50,
+                backSpeed: 50,
+                loop: false,
+                onComplete: () => {
+                    // append the user's input to the chat
+                    setConversation((conversation) => [
+                        ...conversation,
+                        { text: text, type: "user" },
+                        { text: response, type: "bot" },
+                    ]);
+                    setText("");
+                    Type.destroy()
+                },
+            };
+            setType(new Typed("#typed-text", options));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeListening]);
+
+    const Conversation = conversation.map((item, index) => (
+        <Paper
+            key={index}
+            shadow="md"
+            radius="md"
+            p="xs"
+            style={{
+                maxWidth: "fit-context",
+                backgroundColor:
+                    item.type === "user" ? "#ffffff" : "lightsteelblue",
+            }}
+        >
+            <Text size="md">{item.text}</Text>
+            <Divider />
+        </Paper>
+    ));
 
     return (
         <Container size="xl">
@@ -82,18 +100,17 @@ function Dashboard() {
                         label={
                             <Dictaphone
                                 setText={setText}
-                                setListening={setListening}
-                                listeningProp={listening}
+                                setOpen={setOpen}
+                                open={open}
                                 setActiveListening={setActiveListening}
                             />
                         }
                     />
                     <Container
-                        visible={listening}
                         size="sm"
                         p="xl"
                         style={{
-                            backgroundColor: "#d6d6d6",
+                            backgroundColor: "#f6f6f6",
                             borderRadius: "10px",
                         }}
                     >
@@ -126,12 +143,10 @@ function Dashboard() {
                                 maxWidth: "fit-context",
                                 backgroundColor: "lightsteelblue",
                             }}
-                            onClick={() => {
-                                setType(!Type);
-                            }}
                         >
                             <Text id="typed-text" align="right"></Text>
                         </Paper>
+                        <Container fluid>{Conversation}</Container>
                     </Container>
                 </>
             )}
@@ -140,3 +155,35 @@ function Dashboard() {
 }
 
 export default Dashboard;
+
+/* NOTE: This is where you would send the text to the Dialogflow API and get a response. 
+            fetch("/api/dialogflow", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    text: text,
+                }),
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log("Response: " + data.response);
+                    if (data.response !== "") {
+                        strings = [data.response];
+                    } else {
+                        strings = ["Sorry, I didn't get that."];
+                    }
+                    const options = {
+                        strings: [data.response],
+                        typeSpeed: 50,
+                        backSpeed: 50,
+                        loop: false,
+                        onComplete: () => {
+                            setType(false);
+                            setText("");
+                        },
+                    };
+                    setType(new Typed("#typed", options));
+                });
+            */

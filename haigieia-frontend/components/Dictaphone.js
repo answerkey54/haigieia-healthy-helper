@@ -5,7 +5,7 @@ import SpeechRecognition, {
 import { Text, ActionIcon, MantineProvider, Button, Center } from "@mantine/core";
 import { IconMicrophone } from "@tabler/icons";
 
-const Dictaphone = ({text, setText, setListening, listeningProp, setActiveListening}) => {
+const Dictaphone = ({text, setText, setOpen, open, setActiveListening}) => {
 
     const {
         transcript,
@@ -16,8 +16,8 @@ const Dictaphone = ({text, setText, setListening, listeningProp, setActiveListen
 
     useEffect(() => {
         setText(transcript);
-        if(!listeningProp && listening){
-            setListening(true)
+        if(!open && listening){
+            setOpen(true)
         }
         setActiveListening(listening)
       }, [listening, transcript])
