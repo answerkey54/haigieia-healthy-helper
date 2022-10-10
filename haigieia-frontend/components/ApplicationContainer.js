@@ -1,10 +1,15 @@
 import {
-    AppShell,
+    AppShell, Navbar,
 } from "@mantine/core"
 import FooterComponent from "./Footer"
 import HeaderComponent from "./Header"
+import { useState } from 'react';
+import { NavbarMinimal } from "./Nav";
 
 export const ApplicationContainer = ({children}) => {
+
+    const [opened, setOpened] = useState(false);
+
     return (
         <AppShell
         styles={{
@@ -14,8 +19,11 @@ export const ApplicationContainer = ({children}) => {
             }
         }}
         fixed
-        header={<HeaderComponent/>}
+        navbarOffsetBreakpoint="xs"
+        header={<HeaderComponent opened={opened} setOpened={setOpened} />}
         footer={<FooterComponent/>}
+        navbar={<NavbarMinimal hidden={!opened} p="md" hiddenBreakpoint="xs"  />}
+       
         >
             {children}
         </AppShell>
