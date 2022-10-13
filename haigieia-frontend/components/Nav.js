@@ -22,9 +22,9 @@ import {
 
 const useStyles = createStyles((theme) => ({
     link: {
-        width: 50,
-        height: 50,
-        borderRadius: theme.radius.md,
+        width: 40,
+        height: 40,
+        borderRadius: theme.radius.sm,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -72,10 +72,7 @@ function NavbarLink({ icon, label, active, onClick }) {
 const mockdata = [
     { icon: IconHome2, label: "Home" },
     { icon: IconGauge, label: "Dashboard" },
-    { icon: IconDeviceDesktopAnalytics, label: "Analytics" },
-    { icon: IconCalendarStats, label: "Releases" },
     { icon: IconUser, label: "Account" },
-    { icon: IconFingerprint, label: "Security" },
     { icon: IconSettings, label: "Settings" },
 ];
 
@@ -98,21 +95,14 @@ export function NavbarMinimal(props) {
     ));
 
     return (
-        <Navbar width={{ xs: 80, lg: 80 }} p="md" {...props}>
-            <Center>
-                <IconUser stroke={1.5} />
-            </Center>
-            <Navbar.Section grow mt={50}>
+        <Navbar width={{ xs: 70, lg: 70 }} p="md" {...props}>
+            <Navbar.Section grow mt={10}>
                 <Stack justify="center" spacing={0}>
                     {links}
                 </Stack>
             </Navbar.Section>
             <Navbar.Section>
                 <Stack justify="center" spacing={0}>
-                    <NavbarLink
-                        icon={IconSwitchHorizontal}
-                        label="Change account"
-                    />
                     <NavbarLink icon={IconLogout} label="Logout" />
                 </Stack>
             </Navbar.Section>

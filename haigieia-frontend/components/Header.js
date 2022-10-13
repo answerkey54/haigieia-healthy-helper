@@ -34,7 +34,7 @@ function HeaderComponent({ opened, setOpened }) {
     const theme = useMantineTheme();
 
     return (
-        <Header height={70} p="md">
+        <Header height={60} p="sm">
             <Center position="apart" spacing="xl">
                 <MediaQuery largerThan="xs" styles={{ display: "none" }}>
                     <Burger

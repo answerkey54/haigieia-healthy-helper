@@ -10,13 +10,18 @@ import {
     Title,
     Text,
     Paper,
-    createStyles,
-    Space,
+    useMantineTheme,
+    Collapse,
+    ActionIcon,
 } from "@mantine/core";
+import { IconMicrophone, IconX } from "@tabler/icons";
 import Dictaphone from "../components/Dictaphone";
+
+
 
 function Dashboard() {
     const { authUser, loading, enrolled } = useAuth();
+    const theme = useMantineTheme();
     const router = useRouter();
     const [text, setText] = useState("");
     const [open, setOpen] = useState(false);
@@ -41,24 +46,20 @@ function Dashboard() {
         console.log("active listening triggered");
         if (text !== "" && !activeListening) {
             console.log("Completed: " + text);
+            setConversation((conversation) => [
+                { text: text, type: "user" },
+                ...conversation,
+            ]);
             var response = "Hello, how are you?";
-            const options = {
-                strings: [response],
-                typeSpeed: 50,
-                backSpeed: 50,
-                loop: false,
-                onComplete: () => {
-                    // append the user's input to the chat
-                    setConversation((conversation) => [
-                        ...conversation,
-                        { text: text, type: "user" },
-                        { text: response, type: "bot" },
-                    ]);
-                    setText("");
-                    Type.destroy()
-                },
-            };
-            setType(new Typed("#typed-text", options));
+            // wait 2 seconds to simulate a delay in the response
+            setTimeout(() => {
+                setConversation((conversation) => [
+                    { text: response, type: "bot" },
+                    ...conversation,
+                ]);
+                setType(true);
+            }, 2000);
+            console.log(conversation);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeListening]);
@@ -69,14 +70,33 @@ function Dashboard() {
             shadow="md"
             radius="md"
             p="xs"
+            m="xs"
             style={{
-                maxWidth: "fit-context",
                 backgroundColor:
                     item.type === "user" ? "#ffffff" : "lightsteelblue",
+                maxWidth: "80%",
+                float: item.type === "user" ? "left" : "right",
+                marginLeft:
+                    item.type === "user"
+                        ? "0"
+                        : `calc(50% - ${
+                              (1 -
+                                  (250 - Math.min(item.text.length, 250)) /
+                                      250) *
+                              50
+                          }%)`,
+                marginRight:
+                    item.type === "user"
+                        ? `calc(50% - ${
+                              (1 -
+                                  (250 - Math.min(item.text.length, 250)) /
+                                      250) *
+                              50
+                          }%)`
+                        : "0",
             }}
         >
-            <Text size="md">{item.text}</Text>
-            <Divider />
+            <Text size="sm">{item.text}</Text>
         </Paper>
     ));
 
@@ -106,15 +126,79 @@ function Dashboard() {
                             />
                         }
                     />
-                    <Container
-                        size="sm"
-                        p="xl"
-                        style={{
-                            backgroundColor: "#f6f6f6",
-                            borderRadius: "10px",
-                        }}
-                    >
-                        <Paper
+                    <Collapse in={open}>
+                        <Container size="lg">
+                            <Paper p="md">
+                                <Container
+                                    size="md"
+                                    p="sm"
+                                    mb="sm"
+                                    style={{
+                                        backgroundColor: "#f6f6f6",
+                                        borderRadius: "10px",
+                                        maxHeight: "400px",
+                                        overflowY: "scroll",
+                                    }}
+                                >
+                                    {activeListening ? (
+                                        <Paper
+                                            shadow="md"
+                                            radius="md"
+                                            p="xs"
+                                            m="xs"
+                                            style={{
+                                                backgroundColor: "#ffffff",
+                                                maxWidth: "80%",
+                                                float: "left",
+                                                marginRight: `calc(50% - ${
+                                                    (1 -
+                                                        (250 -
+                                                            Math.min(
+                                                                text.length,
+                                                                250
+                                                            )) /
+                                                            250) *
+                                                    50
+                                                }%)`,
+                                            }}
+                                        >
+                                            <Text size="sm">
+                                                {text}
+                                                <Loader
+                                                    color="dark"
+                                                    size="xs"
+                                                    variant="dots"
+                                                    pl={1}
+                                                />
+                                            </Text>
+                                        </Paper>
+                                    ) : (
+                                        <></>
+                                    )}
+                                    {Conversation}
+                                </Container>
+                                <Center>
+                                    <ActionIcon
+                                        onClick={() => setOpen(false)}
+                                        color="dark"
+                                        size="lg"
+                                    >
+                                        <IconX size={16} />
+                                    </ActionIcon>
+                                </Center>
+                            </Paper>
+                        </Container>
+                    </Collapse>
+                </>
+            )}
+        </Container>
+    );
+}
+
+export default Dashboard;
+
+/*
+<Paper
                             shadow="md"
                             radius="md"
                             p="md"
@@ -146,44 +230,4 @@ function Dashboard() {
                         >
                             <Text id="typed-text" align="right"></Text>
                         </Paper>
-                        <Container fluid>{Conversation}</Container>
-                    </Container>
-                </>
-            )}
-        </Container>
-    );
-}
-
-export default Dashboard;
-
-/* NOTE: This is where you would send the text to the Dialogflow API and get a response. 
-            fetch("/api/dialogflow", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    text: text,
-                }),
-            })
-                .then((res) => res.json())
-                .then((data) => {
-                    console.log("Response: " + data.response);
-                    if (data.response !== "") {
-                        strings = [data.response];
-                    } else {
-                        strings = ["Sorry, I didn't get that."];
-                    }
-                    const options = {
-                        strings: [data.response],
-                        typeSpeed: 50,
-                        backSpeed: 50,
-                        loop: false,
-                        onComplete: () => {
-                            setType(false);
-                            setText("");
-                        },
-                    };
-                    setType(new Typed("#typed", options));
-                });
-            */
+*/
