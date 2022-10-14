@@ -10,45 +10,24 @@ import {
     Title,
     Text,
     Paper,
-    createStyles,
-    Space,
+    useMantineTheme,
+    Collapse,
+    ActionIcon,
 } from "@mantine/core";
+import { IconMicrophone, IconX } from "@tabler/icons";
 import Dictaphone from "../components/Dictaphone";
 
-const useStyles = createStyles((theme) => ({
-    response: {
-        float: "right",
-    },
-}));
+
 
 function Dashboard() {
-    const { authUser, loading, enrolled, createUserPassword } = useAuth();
+    const { authUser, loading, enrolled } = useAuth();
+    const theme = useMantineTheme();
     const router = useRouter();
     const [text, setText] = useState("");
-    const [listening, setListening] = useState(false);
+    const [open, setOpen] = useState(false);
     const [activeListening, setActiveListening] = useState(false);
-    const { classes } = useStyles();
-
+    const [conversation, setConversation] = useState([]);
     const [Type, setType] = useState(false);
-
-    useEffect(() => {
-        if (!loading) {
-            const typed = new Typed("#typed-text", {
-                strings: [
-                    "Hi, I'm Haigieia. I'm here to help you with your physical health",
-                ],
-                startDelay: 100,
-                backSpeed: 40,
-                typeSpeed: 70,
-                backDelay: 250,
-                showCursor: false,
-            });
-
-            return () => {
-                typed.reset(false);
-            };
-        }
-    }, [loading]);
 
     useEffect(() => {
         if (!loading && !authUser && !enrolled) {
@@ -61,6 +40,65 @@ function Dashboard() {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [authUser, loading]);
+
+    // Generate a response to the user's input text using the Dialogflow API. Then display the response using Typed.js
+    useEffect(() => {
+        console.log("active listening triggered");
+        if (text !== "" && !activeListening) {
+            console.log("Completed: " + text);
+            setConversation((conversation) => [
+                { text: text, type: "user" },
+                ...conversation,
+            ]);
+            var response = "Hello, how are you?";
+            // wait 2 seconds to simulate a delay in the response
+            setTimeout(() => {
+                setConversation((conversation) => [
+                    { text: response, type: "bot" },
+                    ...conversation,
+                ]);
+                setType(true);
+            }, 2000);
+            console.log(conversation);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeListening]);
+
+    const Conversation = conversation.map((item, index) => (
+        <Paper
+            key={index}
+            shadow="md"
+            radius="md"
+            p="xs"
+            m="xs"
+            style={{
+                backgroundColor:
+                    item.type === "user" ? "#ffffff" : "lightsteelblue",
+                maxWidth: "80%",
+                float: item.type === "user" ? "left" : "right",
+                marginLeft:
+                    item.type === "user"
+                        ? "0"
+                        : `calc(50% - ${
+                              (1 -
+                                  (250 - Math.min(item.text.length, 250)) /
+                                      250) *
+                              50
+                          }%)`,
+                marginRight:
+                    item.type === "user"
+                        ? `calc(50% - ${
+                              (1 -
+                                  (250 - Math.min(item.text.length, 250)) /
+                                      250) *
+                              50
+                          }%)`
+                        : "0",
+            }}
+        >
+            <Text size="sm">{item.text}</Text>
+        </Paper>
+    ));
 
     return (
         <Container size="xl">
@@ -82,22 +120,85 @@ function Dashboard() {
                         label={
                             <Dictaphone
                                 setText={setText}
-                                setListening={setListening}
-                                listeningProp={listening}
+                                setOpen={setOpen}
+                                open={open}
                                 setActiveListening={setActiveListening}
                             />
                         }
                     />
-                    <Container
-                        visible={listening}
-                        size="sm"
-                        p="xl"
-                        style={{
-                            backgroundColor: "#d6d6d6",
-                            borderRadius: "10px",
-                        }}
-                    >
-                        <Paper
+                    <Collapse in={open}>
+                        <Container size="lg">
+                            <Paper p="md">
+                                <Container
+                                    size="md"
+                                    p="sm"
+                                    mb="sm"
+                                    style={{
+                                        backgroundColor: "#f6f6f6",
+                                        borderRadius: "10px",
+                                        maxHeight: "400px",
+                                        overflowY: "scroll",
+                                    }}
+                                >
+                                    {activeListening ? (
+                                        <Paper
+                                            shadow="md"
+                                            radius="md"
+                                            p="xs"
+                                            m="xs"
+                                            style={{
+                                                backgroundColor: "#ffffff",
+                                                maxWidth: "80%",
+                                                float: "left",
+                                                marginRight: `calc(50% - ${
+                                                    (1 -
+                                                        (250 -
+                                                            Math.min(
+                                                                text.length,
+                                                                250
+                                                            )) /
+                                                            250) *
+                                                    50
+                                                }%)`,
+                                            }}
+                                        >
+                                            <Text size="sm">
+                                                {text}
+                                                <Loader
+                                                    color="dark"
+                                                    size="xs"
+                                                    variant="dots"
+                                                    pl={1}
+                                                />
+                                            </Text>
+                                        </Paper>
+                                    ) : (
+                                        <></>
+                                    )}
+                                    {Conversation}
+                                </Container>
+                                <Center>
+                                    <ActionIcon
+                                        onClick={() => setOpen(false)}
+                                        color="dark"
+                                        size="lg"
+                                    >
+                                        <IconX size={16} />
+                                    </ActionIcon>
+                                </Center>
+                            </Paper>
+                        </Container>
+                    </Collapse>
+                </>
+            )}
+        </Container>
+    );
+}
+
+export default Dashboard;
+
+/*
+<Paper
                             shadow="md"
                             radius="md"
                             p="md"
@@ -126,17 +227,7 @@ function Dashboard() {
                                 maxWidth: "fit-context",
                                 backgroundColor: "lightsteelblue",
                             }}
-                            onClick={() => {
-                                setType(!Type);
-                            }}
                         >
                             <Text id="typed-text" align="right"></Text>
                         </Paper>
-                    </Container>
-                </>
-            )}
-        </Container>
-    );
-}
-
-export default Dashboard;
+*/

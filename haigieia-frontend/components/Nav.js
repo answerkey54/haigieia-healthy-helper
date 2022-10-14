@@ -24,9 +24,9 @@ import { NextLink } from "@mantine/next";
 
 const useStyles = createStyles((theme) => ({
     link: {
-        width: 50,
-        height: 50,
-        borderRadius: theme.radius.md,
+        width: 40,
+        height: 40,
+        borderRadius: theme.radius.sm,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
