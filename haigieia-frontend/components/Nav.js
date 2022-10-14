@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useAuth } from "../context/authUserContext";
 import {
     Navbar,
     Center,
@@ -19,6 +20,7 @@ import {
     IconLogout,
     IconSwitchHorizontal,
 } from "@tabler/icons";
+import { NextLink } from "@mantine/next";
 
 const useStyles = createStyles((theme) => ({
     link: {
@@ -55,28 +57,30 @@ const useStyles = createStyles((theme) => ({
     },
 }));
 
-function NavbarLink({ icon, label, active, onClick }) {
+function NavbarLink({ icon, label, active, onClick, href }) {
     const { classes, cx } = useStyles();
+    
+    console.log(onClick)
+
     return (
         <Tooltip label={label} position="right" transitionDuration={0}>
-            <UnstyledButton
-                onClick={onClick}
-                className={cx(classes.link, { [classes.active]: active })}
-            >
-                <Icon icon={icon} />
-            </UnstyledButton>
+                <UnstyledButton
+                    component={NextLink}
+                    href={href}
+                    onClick={onClick}
+                    className={cx(classes.link, { [classes.active]: active })}
+                >
+                    <Icon icon={icon} />
+                </UnstyledButton>
         </Tooltip>
     );
 }
 
-const mockdata = [
-    { icon: IconHome2, label: "Home" },
-    { icon: IconGauge, label: "Dashboard" },
-    { icon: IconDeviceDesktopAnalytics, label: "Analytics" },
-    { icon: IconCalendarStats, label: "Releases" },
-    { icon: IconUser, label: "Account" },
-    { icon: IconFingerprint, label: "Security" },
-    { icon: IconSettings, label: "Settings" },
+const data = [
+    { icon: IconHome2, label: "Home", href: "/" },
+    { icon: IconGauge, label: "Dashboard", href: "/dashboard" },
+    { icon: IconUser, label: "Account", href: "/account" },
+    { icon: IconSettings, label: "Settings", href: "/settings" },
 ];
 
 const Icon = (props) => {
@@ -87,10 +91,20 @@ const Icon = (props) => {
 
 export function NavbarMinimal(props) {
     const [active, setActive] = useState(2);
+    const [signout, setSignout] = useState(null);
+    const { signOutUser, loading } = useAuth();
 
-    const links = mockdata.map((link, index) => (
+    useEffect(() => {
+        console.log('signout', signout)
+        if(!loading) {
+            setSignout(signOutUser)
+        }
+    }, [loading])
+
+    const links = data.map((link, index) => (
         <NavbarLink
             {...link}
+            href={link.href}
             key={link.label}
             active={index === active}
             onClick={() => setActive(index)}
@@ -99,21 +113,14 @@ export function NavbarMinimal(props) {
 
     return (
         <Navbar width={{ xs: 80, lg: 80 }} p="md" {...props}>
-            <Center>
-                <IconUser stroke={1.5} />
-            </Center>
-            <Navbar.Section grow mt={50}>
+            <Navbar.Section grow mt={10}>
                 <Stack justify="center" spacing={0}>
                     {links}
                 </Stack>
             </Navbar.Section>
             <Navbar.Section>
                 <Stack justify="center" spacing={0}>
-                    <NavbarLink
-                        icon={IconSwitchHorizontal}
-                        label="Change account"
-                    />
-                    <NavbarLink icon={IconLogout} label="Logout" />
+                    <NavbarLink icon={IconLogout} label="Logout" href="/" onClick={signout} />
                 </Stack>
             </Navbar.Section>
         </Navbar>
