@@ -4,25 +4,24 @@ import { Footer, Group, Text } from '@mantine/core'
 
 const useStyles = createStyles((theme) => ({
   root: {
-      paddingTop: theme.spacing.xl * 1.5,
-      paddingBottom: theme.spacing.xl * 1.5,
       paddingRight: theme.spacing.xs * 1.5,
-      marginLeft:  theme.spacing.xl * 1.5,
-      height: "100px",
+      paddingLeft:  "80px",
+      height: "40px",
       position: "sticky",
       bottom: 0,
       left: 0,
       right: 0,
       backgroundColor: "#E1E1E1",
 
-      [theme.fn.smallerThan("sm")]: {
-          height: "250px",
+      [theme.fn.smallerThan("xs")]: {
+          height: "40px",
+          paddingLeft: theme.spacing.xs * 1.5,
       },
   }    
 }));
 
 function FooterComponent() {
-  const classes = useStyles();
+  const {classes} = useStyles();
 
   return (
     <div className={classes.root}>

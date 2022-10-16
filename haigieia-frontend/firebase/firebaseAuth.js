@@ -24,6 +24,7 @@ const formatAuthUser = (user) => ({
   uid: user.uid,
   email: user.email,
   displayName: user.displayName,
+  photoURL: user.photoURL,
   /* add more props as needed */
 });
 

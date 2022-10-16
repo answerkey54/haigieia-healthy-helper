@@ -7,6 +7,11 @@ import {
     UnstyledButton,
     createStyles,
     Stack,
+    ActionIcon,
+    Avatar,
+    Popover,
+    Text,
+    Card,
 } from "@mantine/core";
 import {
     TablerIcon,
@@ -59,19 +64,17 @@ const useStyles = createStyles((theme) => ({
 
 function NavbarLink({ icon, label, active, onClick, href }) {
     const { classes, cx } = useStyles();
-    
-    console.log(onClick)
 
     return (
         <Tooltip label={label} position="right" transitionDuration={0}>
-                <UnstyledButton
-                    component={NextLink}
-                    href={href}
-                    onClick={onClick}
-                    className={cx(classes.link, { [classes.active]: active })}
-                >
-                    <Icon icon={icon} />
-                </UnstyledButton>
+            <UnstyledButton
+                component={NextLink}
+                href={href}
+                onClick={onClick}
+                className={cx(classes.link, { [classes.active]: active })}
+            >
+                <Icon icon={icon} />
+            </UnstyledButton>
         </Tooltip>
     );
 }
@@ -79,7 +82,6 @@ function NavbarLink({ icon, label, active, onClick, href }) {
 const data = [
     { icon: IconHome2, label: "Home", href: "/" },
     { icon: IconGauge, label: "Dashboard", href: "/dashboard" },
-    { icon: IconUser, label: "Account", href: "/account" },
     { icon: IconSettings, label: "Settings", href: "/settings" },
 ];
 
@@ -91,15 +93,8 @@ const Icon = (props) => {
 
 export function NavbarMinimal(props) {
     const [active, setActive] = useState(2);
-    const [signout, setSignout] = useState(null);
-    const { signOutUser, loading } = useAuth();
-
-    useEffect(() => {
-        console.log('signout', signout)
-        if(!loading) {
-            setSignout(signOutUser)
-        }
-    }, [loading])
+    const [opened, setOpened] = useState(false);
+    const { authUser, loading, signOutUser } = useAuth();
 
     const links = data.map((link, index) => (
         <NavbarLink
@@ -112,15 +107,55 @@ export function NavbarMinimal(props) {
     ));
 
     return (
-        <Navbar width={{ xs: 80, lg: 80 }} p="md" {...props}>
+        <Navbar width={{ xs: 70, lg: 70 }} p="md" {...props}>
             <Navbar.Section grow mt={10}>
-                <Stack justify="center" spacing={0}>
+                <Stack justify="center" spacing={10}>
                     {links}
                 </Stack>
             </Navbar.Section>
             <Navbar.Section>
                 <Stack justify="center" spacing={0}>
-                    <NavbarLink icon={IconLogout} label="Logout" href="/" onClick={signout} />
+                    {loading || !authUser ? (
+                        <NavbarLink
+                            icon={IconUser}
+                            label={"account"}
+                            href={authUser ? "/account" : "/auth/login"}
+                        />
+                    ) : (
+                        <Popover
+                            width={200}
+                            position="right-end"
+                            withArrow
+                            shadow="md"
+                            opened={opened}
+                            onChange={setOpened}
+                        >
+                            <Popover.Target>
+                                <UnstyledButton radius="md" onClick={() => setOpened((o) => !o)}>
+                                    <Avatar radius="xl" color="blue" src={authUser ? authUser.photoURL : ""} />
+                                </UnstyledButton>
+                            </Popover.Target>
+                            <Popover.Dropdown>
+                               
+                                    <Stack padding={0} spacing={0}>
+                                        <Text size="md" weight={500}>
+                                            {authUser ? authUser.displayName : ""}
+                                        </Text>
+                                        <Text size="xs" color="gray">
+                                            {authUser ? authUser.email: ""}
+                                        </Text>
+                                        <ActionIcon
+                                            onClick={() => signOutUser()}
+                                            color="red"
+                                            size="sm" variant="light"
+                                            
+                                        >
+                                            <IconLogout size={14} />
+                                        </ActionIcon>
+                                    </Stack>
+                            </Popover.Dropdown>
+                        </Popover>
+                    )}
                 </Stack>
             </Navbar.Section>
         </Navbar>

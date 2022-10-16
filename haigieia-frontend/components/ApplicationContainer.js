@@ -27,6 +27,8 @@ export const ApplicationContainer = ({children}) => {
             main: {
                 background: "#f0f0f0",
                 width: "100vw",
+                position: "relative",
+                zIndex: 1,
             }
         }}
         fixed

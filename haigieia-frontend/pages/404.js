@@ -6,7 +6,7 @@ import { useAuth } from "../context/authUserContext";
 
 const useStyles = createStyles((theme) => ({
     root: {
-      paddingTop: 80,
+      paddingTop: 20,
       paddingBottom: 80,
     },
   

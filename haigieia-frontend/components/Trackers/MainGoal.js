@@ -78,7 +78,7 @@ function MainGoal() {
                 label="Main Goal:"
                 variant="filled"
                 radius="xl"
-                size="xs"
+                size="sm"
             />
             <Center>
                 <RingProgress
