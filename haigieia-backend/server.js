@@ -29,6 +29,9 @@ app.post('/audio', (req, res) => {
     console.log(`stderr: ${data}`)  
   })
 
+  python.on('exit', function(code){
+    console.log(`STT child process exited with code ${code}`) 
+  })
   
 });
 
