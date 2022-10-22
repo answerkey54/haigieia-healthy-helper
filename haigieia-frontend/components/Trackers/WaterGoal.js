@@ -1,8 +1,11 @@
 import {
+    ActionIcon,
     Center,
     Container,
     createStyles,
+    Group,
     RingProgress,
+    SimpleGrid,
     Space,
     Text,
     ThemeIcon,
@@ -11,7 +14,8 @@ import {
     useMantineTheme,
 } from "@mantine/core";
 import { useCountUp } from "react-countup";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { IconBottle, IconGlassFull } from "@tabler/icons";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
     container: {
@@ -27,10 +31,9 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     },
     water: {
         ref: getRef("water"),
-        backgroundColor: theme.colors.blue[5],
+        backgroundColor: theme.colors.blue[4],
         width: "150px",
         height: "0px",
-        borderRadius: "10px",
         transition: "height 3s ease-out",
     },
     glass: {
@@ -63,7 +66,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 }));
 
 // create a component that returns a water bottle icon
-function WaterBottle({ width = 24, height = 24, left = 0, right = 1 }) {
+function WaterBottle({ width = 24, height = 24, left = 0, right = 24, style }) {
     const theme = useMantineTheme();
 
     return (
@@ -72,6 +75,7 @@ function WaterBottle({ width = 24, height = 24, left = 0, right = 1 }) {
             className="icon icon-tabler icon-tabler-bottle"
             width={24}
             height={24}
+            style={style}
             viewBox={`${left} 0 ${right} 24`}
             strokeWidth="2"
             stroke={theme.colors.blue[4]}
@@ -87,13 +91,74 @@ function WaterBottle({ width = 24, height = 24, left = 0, right = 1 }) {
     );
 }
 
+function BottleView({ water, goal }) {
+    const conversion = [
+        { left: -3, right: 1 },
+        { left: -2, right: 1 },
+        { left: -1, right: 1 },
+        { left: 0, right: 1 },
+        { left: 0, right: 3 },
+        { left: 0, right: 5 },
+        { left: 0, right: 7 },
+        { left: 0, right: 24 },
+    ];
+    const num = water / goal;
+    const decimal = water - Math.floor(water);
+    // convert decimal to closest 0.125
+    console.log(decimal);
+    const eigth = parseInt((Math.round(decimal * 8) / 8) * 8);
+    console.log(eigth);
+    // for num render a bottle
+    const bottles = [];
+    for (let i = 0; i < Math.floor(water); i++) {
+        bottles.push(
+            <Center>
+                <WaterBottle />
+            </Center>
+        );
+    }
+    // for decimal render a bottle with a custom viewbox
+    if (eigth > 0) {
+        bottles.push(
+            <Center>
+                <WaterBottle
+                    left={conversion[eigth - 1].left}
+                    right={conversion[eigth - 1].right}
+                    style={{ transform: "translateX(-50%)" }}
+                />
+            </Center>
+        );
+    }
+    for (let i = 0; i < goal - Math.ceil(water); i++) {
+        bottles.push(
+            <Center>
+                <WaterBottle style={{ opacity: 0.25 }} />
+            </Center>
+        );
+    }
+    return (
+        <SimpleGrid
+            cols={4}
+            spacing="xs"
+            verticalSpacing="sm"
+            breakpoints={[
+                { maxWidth: "sm", cols: 3 },
+                { maxWidth: "md", cols: 4 },
+            ]}
+        >
+            {bottles}
+        </SimpleGrid>
+    );
+}
+
 function WaterGoal() {
     const theme = useMantineTheme();
     const { classes } = useStyles();
+    const [view, setView] = useState(true);
 
     const water_goal = {
         title: "Water",
-        value: 7.25,
+        value: 7.5,
         goal: 12,
         unit: "glasses",
         color: theme.colors.blue[4],
@@ -106,6 +171,8 @@ function WaterGoal() {
         delay: 0,
         duration: 3,
         startOnMount: false,
+        preserveValue: true,
+        redraw: true,
         suffix: "%",
         onReset: () => console.log("Resetted!"),
         onUpdate: () => console.log("Updated!"),
@@ -115,39 +182,61 @@ function WaterGoal() {
     });
 
     useEffect(() => {
-        const water = document.getElementById("water");
-        
-    }, []);
-
-    useEffect(() => {
-        const water = document.getElementById("water");
-        water.style.transition = "none";
-        water.style.height = `0px`;
-        setTimeout(() => {
-            const waterHeight = (water_goal.value / water_goal.goal) * 150;
-            water.style.transition = "height 3s ease-out";
-            water.style.height = `${waterHeight}px`;
-            const percent = parseInt((water_goal.value / water_goal.goal) * 100);
-            update(percent);
-        }, 100);
+        if (view) {
+            const water = document.getElementById("water");
+            water.style.transition = "none";
+            water.style.height = `0px`;
+            setTimeout(() => {
+                const waterHeight = (water_goal.value / water_goal.goal) * 150;
+                water.style.transition = "height 3s ease-out";
+                water.style.height = `${waterHeight}px`;
+                const percent = parseInt(
+                    (water_goal.value / water_goal.goal) * 100
+                );
+                update(percent);
+            }, 100);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [water_goal]);
 
+    const toggleView = () => {
+        if (view) {
+            setView(false);
+        }else{
+            setView(true);
+            reset();
+        }
+    };
+
+
     return (
-        <Container style={{ backgroundColor: "#f6f6f6" }} p="sm">
-            <Text size="md" align="center">
-                Water Goal
-            </Text>
+        <Container style={{ backgroundColor: "#f6f6f6", minWidth: "200px" }} p="sm" >
+            <Title order={3} align="center">
+            Water Goal
+        </Title>
             <Center>
-                <div id="container" className={classes.container}>
-                    <div id="glass" className={classes.glass}>
-                        <div id="water" className={classes.water}></div>
-                        <div id="cover" className={classes.cover}></div>
-                        <Title order={2} className={classes.countup}>
-                            <div id="counter">0%</div>
-                        </Title>
+                {view ? (
+                    <div id="container" className={classes.container}>
+                        <div id="glass" className={classes.glass}>
+                            <div id="water" className={classes.water}></div>
+                            <div id="cover" className={classes.cover}></div>
+                            <Title order={2} className={classes.countup}>
+                                <div id="counter">0%</div>
+                            </Title>
+                        </div>
                     </div>
-                </div>
+                ) : (
+                    <BottleView
+                        water={water_goal.value}
+                        goal={water_goal.goal}
+                    />
+                )}
             </Center>
+            <ActionIcon
+                onClick={() => toggleView()}
+            >
+                {view ? <IconBottle /> : <IconGlassFull />}
+            </ActionIcon>
             <Center mb={10}>
                 <Text
                     weight={400}
@@ -162,15 +251,6 @@ function WaterGoal() {
                     <Space h={0} />/{water_goal.goal}
                 </Text>
             </Center>
-
-            <WaterBottle left={-3} right={1} />
-            <WaterBottle left={-2} right={1} />
-            <WaterBottle left={-1} right={1} />
-            <WaterBottle left={0} right={1} />
-            <WaterBottle left={0} right={3} />
-            <WaterBottle left={0} right={5} />
-            <WaterBottle left={0} right={7} />
-            <WaterBottle left={0} right={24} />
         </Container>
     );
 }
@@ -179,6 +259,14 @@ export default WaterGoal;
 
 // 16 increments from 0 to half
 /*
+                <WaterBottle left={-3} right={1} />
+                <WaterBottle left={-2} right={1} />
+                <WaterBottle left={-1} right={1} />
+                <WaterBottle left={0} right={1} />
+                <WaterBottle left={0} right={3} />
+                <WaterBottle left={0} right={5} />
+                <WaterBottle left={0} right={7} />
+                <WaterBottle left={0} right={24} />
 <RingProgress
                     size={150}
                     thickness={13}

@@ -13,11 +13,14 @@ import {
     useMantineTheme,
     Collapse,
     ActionIcon,
+    Grid,
 } from "@mantine/core";
 import { IconMicrophone, IconX } from "@tabler/icons";
 import Dictaphone from "../components/Dictaphone";
-
-
+import DashboardCard from "../components/DashboardCard";
+import MainGoal from "../components/Trackers/MainGoal";
+import WaterGoal from "../components/Trackers/WaterGoal";
+import NutritionBreakdown from "../components/Trackers/NutritionBreakdown";
 
 function Dashboard() {
     const { authUser, loading, enrolled } = useAuth();
@@ -189,6 +192,13 @@ function Dashboard() {
                             </Paper>
                         </Container>
                     </Collapse>
+                    <Container size="xl">
+                        <Grid grow>
+                            <DashboardCard component={<MainGoal />} span={4} />
+                            <DashboardCard component={<WaterGoal />} span={4} />
+                            <DashboardCard component={<NutritionBreakdown />} span={4} />
+                        </Grid>
+                    </Container>
                 </>
             )}
         </Container>

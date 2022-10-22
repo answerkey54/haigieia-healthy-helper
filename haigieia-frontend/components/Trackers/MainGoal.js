@@ -9,6 +9,7 @@ import {
     Stack,
     Text,
     ThemeIcon,
+    Title,
     useMantineTheme,
 } from "@mantine/core";
 import { IconCheck } from "@tabler/icons";
@@ -75,7 +76,9 @@ function MainGoal() {
                 data={goals.map((goal) => goal.title)}
                 value={goals[goal].title}
                 onChange={(value) => setGoal(getGoalIndex(value))}
-                label="Main Goal:"
+                label={<Title order={3} align="center">
+                Nutrition
+            </Title>}
                 variant="filled"
                 radius="xl"
                 size="sm"
