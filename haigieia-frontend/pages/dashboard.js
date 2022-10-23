@@ -40,6 +40,7 @@ function Dashboard() {
             router.push("/auth/login");
         }
         if (!loading && authUser && !enrolled) {
+            console.log(authUser, enrolled, loading);
             console.info("Not enrolled");
             router.push("/auth/enroll");
         }

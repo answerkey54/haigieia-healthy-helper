@@ -17,6 +17,7 @@ import { useId } from '@mantine/hooks';
 import { useCountUp } from "react-countup";
 import React, { useEffect, useRef, useState } from "react";
 import { IconBottle, IconGlassFull } from "@tabler/icons";
+import { useDatabase } from "../../context/userDataContext";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
     container: {
@@ -159,6 +160,7 @@ function BottleView({ water, goal }) {
 }
 
 function WaterGoal() {
+    const { waterGoal } = useDatabase();
     const theme = useMantineTheme();
     const { classes } = useStyles();
     const [view, setView] = useState(true);
@@ -166,8 +168,6 @@ function WaterGoal() {
     //FIXME - This is placeholder data, it will be replace with a firebase call
     const water_goal = {
         title: "Water",
-        value: 7.5,
-        goal: 12,
         unit: "glasses",
         color: theme.colors.blue[4],
     };
@@ -197,11 +197,11 @@ function WaterGoal() {
             water.style.transition = "none";
             water.style.height = `0px`;
             setTimeout(() => {
-                const waterHeight = (water_goal.value / water_goal.goal) * 150;
+                const waterHeight = (waterGoal.value / waterGoal.goal) * 150;
                 water.style.transition = "height 3s ease-out";
                 water.style.height = `${waterHeight}px`;
                 const percent = parseInt(
-                    (water_goal.value / water_goal.goal) * 100
+                    (waterGoal.value / waterGoal.goal) * 100
                 );
                 console.log('coutup', counter)
                 update(percent)
@@ -209,7 +209,7 @@ function WaterGoal() {
             }, 100);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [water_goal]);
+    }, [waterGoal]);
 
     const toggleView = () => {
         if (view) {
@@ -239,8 +239,8 @@ function WaterGoal() {
                     </div>
                 ) : (
                     <BottleView
-                        water={water_goal.value}
-                        goal={water_goal.goal}
+                        water={waterGoal.value}
+                        goal={waterGoal.goal}
                     />
                 )}
             </Center>
@@ -255,12 +255,12 @@ function WaterGoal() {
                     style={{ fontSize: "30px" }}
                     color={water_goal.color}
                 >
-                    {water_goal.value}
+                    {waterGoal.value}
                 </Text>
                 <Space w={4} />
                 <Text weight={400} size="xs" color={water_goal.color}>
                     {water_goal.unit}
-                    <Space h={0} />/{water_goal.goal}
+                    <Space h={0} />/{waterGoal.goal}
                 </Text>
             </Center>
         </Container>

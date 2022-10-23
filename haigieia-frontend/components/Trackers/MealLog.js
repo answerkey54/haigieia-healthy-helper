@@ -85,7 +85,7 @@ function MealLog() {
 
         return (
             <Paper shadow={hovered ? 'lg' : 'xs'} radius="md" p="sm" ref={ref}>
-                <Group spacing="sm">
+                <Group spacing="sm" style={{minWidth: '200px'}}>
                     <Avatar
                         src={"image" in meal ? meal.image : null}
                         variant="filled"

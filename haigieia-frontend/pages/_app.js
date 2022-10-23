@@ -1,4 +1,5 @@
 import { AuthUserProvider } from "../context/authUserContext";
+import { UserDataProvider } from "../context/userDataContext";
 import { MantineProvider } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
 import "animate.css";
@@ -25,9 +26,11 @@ function MyApp({ Component, pageProps }) {
                 zIndex={2077}
             >
                 <AuthUserProvider>
-                    <ApplicationContainer>
-                        <Component {...pageProps} />
-                    </ApplicationContainer>
+                    <UserDataProvider>
+                        <ApplicationContainer>
+                            <Component {...pageProps} />
+                        </ApplicationContainer>
+                    </UserDataProvider>
                 </AuthUserProvider>
             </NotificationsProvider>
         </MantineProvider>
