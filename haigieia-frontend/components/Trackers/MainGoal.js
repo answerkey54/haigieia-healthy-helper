@@ -133,7 +133,7 @@ function MainGoal() {
                     {goals[goal].unit}
                 </Text>
             </Center>
-            <Group position="apart" style={{ backgroundColor: "#fafafa" }} p="md">
+            <Group position="apart" style={{ backgroundColor: "#fafafa" }} p="md" noWrap>
                 {getOtherGoals(goals[goal].title).map((cur,index) => (
                     <Stack spacing={0} key={index}>
                         <Text weight={700} size="xs" 

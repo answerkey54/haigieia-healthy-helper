@@ -21,6 +21,7 @@ import DashboardCard from "../components/DashboardCard";
 import MainGoal from "../components/Trackers/MainGoal";
 import WaterGoal from "../components/Trackers/WaterGoal";
 import NutritionBreakdown from "../components/Trackers/NutritionBreakdown";
+import EmojiIcon from "../shared/EmojiIcon";
 
 function Dashboard() {
     const { authUser, loading, enrolled } = useAuth();

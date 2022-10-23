@@ -10,12 +10,12 @@
     "setup": "nvm use"
   },
   "dependencies": {
-    "@mantine/core": "^5.5.0",
-    "@mantine/dates": "^5.5.0",
-    "@mantine/form": "^5.5.0",
-    "@mantine/hooks": "^5.5.0",
-    "@mantine/next": "^5.5.0",
-    "@mantine/notifications": "^5.5.0",
+    "@mantine/core": "^5.6.1",
+    "@mantine/dates": "^5.6.1",
+    "@mantine/form": "^5.6.1",
+    "@mantine/hooks": "^5.6.1",
+    "@mantine/next": "^5.6.1",
+    "@mantine/notifications": "^5.6.1",
     "@tabler/icons": "^1.68.0",
     "animate.css": "^4.1.1",
     "dayjs": "^1.11.3",
@@ -27,6 +27,7 @@
     "react-dom": "17.0.2",
     "react-hook-form": "^7.31.3",
     "react-speech-recognition": "^3.9.1",
+    "styled-jsx": "^5.1.0",
     "typed.js": "^2.0.12"
   },
   "devDependencies": {

@@ -21,13 +21,17 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     container: {
         marginLeft: "auto",
         marginRight: "auto",
-        width: "180px",
+        minWidth: "250px",
         padding: "10px",
         backgroundColor: "#f6f6f6",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         borderRadius: "10px",
+
+        [theme.fn.smallerThan("xs")]: {
+            minWidth: "0px",
+        }
     },
     water: {
         ref: getRef("water"),
@@ -49,7 +53,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
         position: "absolute",
         bottom: 0,
         backgroundColor: "#f6f6f6",
-        width: "150px",
+        width: "160px",
         height: "150px",
         clipPath:
             "polygon(0% 0%, 0% 100%, 25% 100%, 15% 0, 85% 0, 75% 100%, 25% 100%, 25% 100%, 100% 100%, 100% 0%)",
@@ -256,52 +260,3 @@ function WaterGoal() {
 }
 
 export default WaterGoal;
-
-// 16 increments from 0 to half
-/*
-                <WaterBottle left={-3} right={1} />
-                <WaterBottle left={-2} right={1} />
-                <WaterBottle left={-1} right={1} />
-                <WaterBottle left={0} right={1} />
-                <WaterBottle left={0} right={3} />
-                <WaterBottle left={0} right={5} />
-                <WaterBottle left={0} right={7} />
-                <WaterBottle left={0} right={24} />
-<RingProgress
-                    size={150}
-                    thickness={13}
-                    roundCaps
-                    sections={[
-                        {
-                            value: (water_goal.value / water_goal.goal) * 100,
-                            color: water_goal.color,
-                        },
-                    ]}
-                    label={
-                        water_goal.value < water_goal.goal ? (
-                            <Text
-                                color={water_goal.color}
-                                weight={700}
-                                align="center"
-                                size="xl"
-                            >
-                                {parseInt(
-                                    (water_goal.value / water_goal.goal) * 100
-                                )}
-                                %
-                            </Text>
-                        ) : (
-                            <Center>
-                                <ThemeIcon
-                                    color="blue"
-                                    variant="light"
-                                    radius="xl"
-                                    size="xl"
-                                >
-                                    <IconCheck size={28} />
-                                </ThemeIcon>
-                            </Center>
-                        )
-                    }
-                />
-*/
