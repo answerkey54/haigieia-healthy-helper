@@ -8,6 +8,7 @@ export function useFirebaseDatabase() {
     const [waterGoal, setWaterGoal] = useState(null);
     const [mealLog, setMealLog] = useState(null);
     const [nutritionLog, setNutritionLog] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (authUser) {
@@ -33,6 +34,7 @@ export function useFirebaseDatabase() {
         setWaterGoal(user.water_goal);
         setMealLog(user.mealLog);
         setNutritionLog(user.nutritionLog);
+        setLoading(false);
     };
 
     const updateWaterGoal = async (waterGoal) => {
@@ -60,6 +62,7 @@ export function useFirebaseDatabase() {
         waterGoal,
         mealLog,
         nutritionLog,
+        loading,
         updateWaterGoal,
         appendMealLog,
         updateNutritionLog,

@@ -6,6 +6,7 @@ import {
     Group,
     RingProgress,
     SimpleGrid,
+    Skeleton,
     Space,
     Text,
     ThemeIcon,
@@ -13,7 +14,7 @@ import {
     UnstyledButton,
     useMantineTheme,
 } from "@mantine/core";
-import { useId } from '@mantine/hooks';
+import { useId } from "@mantine/hooks";
 import { useCountUp } from "react-countup";
 import React, { useEffect, useRef, useState } from "react";
 import { IconBottle, IconGlassFull } from "@tabler/icons";
@@ -33,7 +34,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 
         [theme.fn.smallerThan("xs")]: {
             minWidth: "0px",
-        }
+        },
     },
     water: {
         ref: getRef("water"),
@@ -71,7 +72,6 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     },
 }));
 
-// create a component that returns a water bottle icon
 function WaterBottle({ width = 24, height = 24, left = 0, right = 24, style }) {
     const theme = useMantineTheme();
 
@@ -160,10 +160,12 @@ function BottleView({ water, goal }) {
 }
 
 function WaterGoal() {
-    const { waterGoal } = useDatabase();
+    const { waterGoal, loading } = useDatabase();
     const theme = useMantineTheme();
     const { classes } = useStyles();
     const [view, setView] = useState(true);
+
+    console.log(waterGoal, loading);
 
     //FIXME - This is placeholder data, it will be replace with a firebase call
     const water_goal = {
@@ -174,25 +176,8 @@ function WaterGoal() {
 
     const counter = useRef(null);
 
-    const { countUp, start, pauseResume, reset, update } = useCountUp({
-        ref: counter,
-        start: 0,
-        end: 100,
-        delay: 0,
-        duration: 3,
-        startOnMount: false,
-        preserveValue: true,
-        redraw: true,
-        suffix: "%",
-        onReset: () => console.log("Resetted!"),
-        onUpdate: () => console.log("Updated!"),
-        onPauseResume: () => console.log("Paused or resumed!"),
-        onStart: () => console.log("Started! 💨"),
-        onEnd: () => console.log("Ended! 👏"),
-    });
-
     useEffect(() => {
-        if (view) {
+        if (view && !loading) {
             const water = document.getElementById("water");
             water.style.transition = "none";
             water.style.height = `0px`;
@@ -203,9 +188,8 @@ function WaterGoal() {
                 const percent = parseInt(
                     (waterGoal.value / waterGoal.goal) * 100
                 );
-                console.log('coutup', counter)
-                update(percent)
                 
+               
             }, 100);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -214,55 +198,76 @@ function WaterGoal() {
     const toggleView = () => {
         if (view) {
             setView(false);
-        }else{
+        } else {
             setView(true);
-            reset();
+
         }
     };
 
-
     return (
-        <Container style={{ backgroundColor: "#f6f6f6", minWidth: "200px" }} p="sm" >
-            <Title order={3} align="center">
-            Water Goal
-        </Title>
-            <Center>
-                {view ? (
-                    <div id="container" className={classes.container}>
-                        <div id="glass" className={classes.glass}>
-                            <div id="water" className={classes.water}></div>
-                            <div id="cover" className={classes.cover}></div>
-                            <Title order={2} className={classes.countup}>
-                                <div id="counter" ref={counter}>0%</div>
-                            </Title>
-                        </div>
-                    </div>
-                ) : (
-                    <BottleView
-                        water={waterGoal.value}
-                        goal={waterGoal.goal}
-                    />
-                )}
-            </Center>
-            <ActionIcon
-                onClick={() => toggleView()}
-            >
-                {view ? <IconBottle /> : <IconGlassFull />}
-            </ActionIcon>
-            <Center mb={10}>
-                <Text
-                    weight={400}
-                    style={{ fontSize: "30px" }}
-                    color={water_goal.color}
-                >
-                    {waterGoal.value}
-                </Text>
-                <Space w={4} />
-                <Text weight={400} size="xs" color={water_goal.color}>
-                    {water_goal.unit}
-                    <Space h={0} />/{waterGoal.goal}
-                </Text>
-            </Center>
+        <Container
+            style={{ backgroundColor: "#f6f6f6", minWidth: "200px" }}
+            p="sm"
+        >
+            {loading ? (
+                <Center>
+                    <Skeleton height={16} radius='md' />
+                    <Skeleton height={120} circle mb="xl" />
+                    <Skeleton height={8} radius="xl" />
+                </Center>
+            ) : (
+                <>
+                    <Title order={3} align="center">
+                        Water Goal
+                    </Title>
+                    <Center>
+                        {view ? (
+                            <div id="container" className={classes.container}>
+                                <div id="glass" className={classes.glass}>
+                                    <div
+                                        id="water"
+                                        className={classes.water}
+                                    ></div>
+                                    <div
+                                        id="cover"
+                                        className={classes.cover}
+                                    ></div>
+                                    <Title
+                                        order={2}
+                                        className={classes.countup}
+                                    >
+                                        <div id="counter" ref={counter}>
+                                            0%
+                                        </div>
+                                    </Title>
+                                </div>
+                            </div>
+                        ) : (
+                            <BottleView
+                                water={waterGoal.value}
+                                goal={waterGoal.goal}
+                            />
+                        )}
+                    </Center>
+                    <ActionIcon onClick={() => toggleView()}>
+                        {view ? <IconBottle /> : <IconGlassFull />}
+                    </ActionIcon>
+                    <Center mb={10}>
+                        <Text
+                            weight={400}
+                            style={{ fontSize: "30px" }}
+                            color={water_goal.color}
+                        >
+                            {waterGoal.value}
+                        </Text>
+                        <Space w={4} />
+                        <Text weight={400} size="xs" color={water_goal.color}>
+                            {water_goal.unit}
+                            <Space h={0} />/{waterGoal.goal}
+                        </Text>
+                    </Center>
+                </>
+            )}
         </Container>
     );
 }

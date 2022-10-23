@@ -5,6 +5,7 @@ const userDataContext = createContext({
   waterGoal: null,
   mealLog: null,
   nutritionLog: null,
+  loading: true,
   setWaterGoal: async () => {},
   appendMealLog: async () => {},
   updateNutritionLog: async () => {},
