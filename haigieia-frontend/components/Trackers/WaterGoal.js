@@ -13,8 +13,9 @@ import {
     UnstyledButton,
     useMantineTheme,
 } from "@mantine/core";
+import { useId } from '@mantine/hooks';
 import { useCountUp } from "react-countup";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IconBottle, IconGlassFull } from "@tabler/icons";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
@@ -116,7 +117,7 @@ function BottleView({ water, goal }) {
     const bottles = [];
     for (let i = 0; i < Math.floor(water); i++) {
         bottles.push(
-            <Center>
+            <Center key={i}>
                 <WaterBottle />
             </Center>
         );
@@ -145,6 +146,8 @@ function BottleView({ water, goal }) {
             cols={4}
             spacing="xs"
             verticalSpacing="sm"
+            mt={35}
+            mb={25}
             breakpoints={[
                 { maxWidth: "sm", cols: 3 },
                 { maxWidth: "md", cols: 4 },
@@ -160,6 +163,7 @@ function WaterGoal() {
     const { classes } = useStyles();
     const [view, setView] = useState(true);
 
+    //FIXME - This is placeholder data, it will be replace with a firebase call
     const water_goal = {
         title: "Water",
         value: 7.5,
@@ -168,8 +172,10 @@ function WaterGoal() {
         color: theme.colors.blue[4],
     };
 
+    const counter = useRef(null);
+
     const { countUp, start, pauseResume, reset, update } = useCountUp({
-        ref: "counter",
+        ref: counter,
         start: 0,
         end: 100,
         delay: 0,
@@ -197,7 +203,9 @@ function WaterGoal() {
                 const percent = parseInt(
                     (water_goal.value / water_goal.goal) * 100
                 );
-                update(percent);
+                console.log('coutup', counter)
+                update(percent)
+                
             }, 100);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -225,7 +233,7 @@ function WaterGoal() {
                             <div id="water" className={classes.water}></div>
                             <div id="cover" className={classes.cover}></div>
                             <Title order={2} className={classes.countup}>
-                                <div id="counter">0%</div>
+                                <div id="counter" ref={counter}>0%</div>
                             </Title>
                         </div>
                     </div>

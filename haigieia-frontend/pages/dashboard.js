@@ -22,6 +22,7 @@ import MainGoal from "../components/Trackers/MainGoal";
 import WaterGoal from "../components/Trackers/WaterGoal";
 import NutritionBreakdown from "../components/Trackers/NutritionBreakdown";
 import EmojiIcon from "../shared/EmojiIcon";
+import MealLog from "../components/Trackers/MealLog";
 
 function Dashboard() {
     const { authUser, loading, enrolled } = useAuth();
@@ -130,7 +131,7 @@ function Dashboard() {
                             />
                         }
                     />
-                    <Collapse in={open}>
+                    <Collapse in={open} mb={40}>
                         <Container size="lg">
                             <Paper p="md">
                                 <Container
@@ -198,6 +199,7 @@ function Dashboard() {
                             <DashboardCard component={<MainGoal />} span={4} />
                             <DashboardCard component={<WaterGoal />} span={4} />
                             <DashboardCard component={<NutritionBreakdown />} span={4} />
+                            <DashboardCard component={<MealLog />} span={4} />
                         </Grid>
                     </Container>
                 </>
@@ -207,38 +209,3 @@ function Dashboard() {
 }
 
 export default Dashboard;
-
-/*
-<Paper
-                            shadow="md"
-                            radius="md"
-                            p="md"
-                            style={{ maxWidth: "fit-content", display: "flex" }}
-                        >
-                            <Text>
-                                {text}
-                                {activeListening ? (
-                                    <Loader
-                                        color="dark"
-                                        size="xs"
-                                        variant="dots"
-                                        pl={1}
-                                    />
-                                ) : (
-                                    <></>
-                                )}
-                            </Text>
-                        </Paper>
-                        <Space h="md" />
-                        <Paper
-                            shadow="md"
-                            radius="md"
-                            p="md"
-                            style={{
-                                maxWidth: "fit-context",
-                                backgroundColor: "lightsteelblue",
-                            }}
-                        >
-                            <Text id="typed-text" align="right"></Text>
-                        </Paper>
-*/

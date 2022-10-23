@@ -19,6 +19,7 @@ function MainGoal() {
     const [goal, setGoal] = useState(0);
     const theme = useMantineTheme();
 
+    //FIXME - This is a placeholder for the main goal. It will be replaced with a firebase call
     const goals = [
         {
             title: "Calories",

@@ -7,6 +7,7 @@ import { IconMicrophone } from "@tabler/icons";
 
 const Dictaphone = ({text, setText, setOpen, open, setActiveListening}) => {
 
+    // FIXME - This is where you would add the logic for an alternative speech recognition service, make sure to setText() with the result.
     const {
         transcript,
         listening,

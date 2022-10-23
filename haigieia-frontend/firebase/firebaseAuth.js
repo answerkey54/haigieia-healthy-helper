@@ -105,7 +105,6 @@ export function useFirebaseAuth() {
   const createUserPassword = (data) =>
     createUserWithEmailAndPassword(auth, data.email, data.password)
       .then((result) => {
-        // TODO: Create user database entry
         set(ref(database, `users/${result.user.uid}`), {
           email: data.email,
           displayName: data.displayName,

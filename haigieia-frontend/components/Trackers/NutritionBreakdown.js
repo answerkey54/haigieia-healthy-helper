@@ -10,6 +10,8 @@ import EmojiIcon from "../../shared/EmojiIcon";
 
 function NutritionBreakdown() {
     const theme = useMantineTheme();
+
+    // FIXME - This is a placeholder for the nutrition breakdown. It will be replaced with a firebase call
     const goals = [
         {
             title: "Protein",
