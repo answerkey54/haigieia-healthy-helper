@@ -194,7 +194,7 @@ function Dashboard() {
                             </Paper>
                         </Container>
                     </Collapse>
-                    <Container size="xl">
+                    <Container size="xl" mb={50}>
                         <Grid grow>
                             <DashboardCard component={<MainGoal />} span={4} />
                             <DashboardCard component={<WaterGoal />} span={4} />

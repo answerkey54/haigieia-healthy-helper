@@ -75,7 +75,6 @@ function MealLog() {
 
     const MealCard = ({ meal, color }) => {
         const { hovered, ref } = useHover();
-        const { sizeRef, width, height } = useElementSize();
 
         // get first letter of each word in item name limit to 2 letters
         const initials = meal.item
@@ -85,7 +84,7 @@ function MealLog() {
             .substring(0, 2);
 
         return (
-            <Paper shadow="xs" radius="md" p="sm" ref={ref}>
+            <Paper shadow={hovered ? 'lg' : 'xs'} radius="md" p="sm" ref={ref}>
                 <Group spacing="sm">
                     <Avatar
                         src={"image" in meal ? meal.image : null}
@@ -105,13 +104,13 @@ function MealLog() {
                     </Stack>
                 </Group>
                 <Collapse in={hovered}>
-                    <Group position="center" spacing="sm" grow mt={20}>
+                    <Group position="center" spacing="md" grow mt={20} noWrap>
                         <Stack spacing={0} pl={10}>
                             <Title order={6}>{meal.protein}g</Title>
                             <Text size="xs" color="gray">
                                 Protein
                             </Text>
-                            <Progress color={color} value={parseInt((meal.protein/goals[1].goal)*100)} style={{width: '50px', transform: ''}} />
+                            <Progress color={color} value={parseInt((meal.protein/goals[1].goal)*100)} style={{width: '50px'}} />
                         </Stack>
                         <Stack spacing={0} pl={10}>
                             <Title order={6}>{meal.carbs}g</Title>
@@ -161,7 +160,7 @@ function MealLog() {
             <Title order={3} align="center" mb={30}>
                 Recent Meals
             </Title>
-            <Stack>
+            <Stack style={{ maxHeight: '400px', overflowY: 'auto', padding: '0 10px 0 10px'}}>
                 {meals.map((meal, index) => (
                     <MealCard key={index} meal={meal} color={randomColor()} />
                 ))}
