@@ -111,7 +111,7 @@ function MealLog() {
                             <Text size="xs" color="gray">
                                 Protein
                             </Text>
-                            <Progress color={color} value={parseInt((meal.protein/goals[1].goal)*100)} style={{width: '50px'}} />
+                            <Progress color={color} value={parseInt((meal.protein/goals[1].goal)*100)} style={{width: '50px', transform: ''}} />
                         </Stack>
                         <Stack spacing={0} pl={10}>
                             <Title order={6}>{meal.carbs}g</Title>
