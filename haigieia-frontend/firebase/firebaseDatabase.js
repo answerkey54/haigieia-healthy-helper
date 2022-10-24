@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getDatabase, ref, child, get, set } from "firebase/database";
+import { onValue, ref, child, get, set } from "firebase/database";
 import { useAuth } from "../context/authUserContext";
 import { database } from "./firebaseAuth";
 
@@ -13,6 +13,7 @@ export function useFirebaseDatabase() {
     useEffect(() => {
         if (authUser) {
             fetchUserData(authUser);
+            startListeners(authUser);
         }
     }, [authUser]);
 
@@ -31,10 +32,20 @@ export function useFirebaseDatabase() {
                 console.error(error);
                 return null;
             });
+
         setWaterGoal(user.water_goal);
         setMealLog(user.mealLog);
         setNutritionLog(user.nutritionLog);
+        console.log("user not found");
         setLoading(false);
+    };
+
+    const startListeners = (authUser) => {
+        const waterGoalRef = ref(database, `data/${authUser.uid}/water_goal`);
+        onValue(waterGoalRef, (snapshot) => {
+            const data = snapshot.val();
+            setWaterGoal(data);
+        });
     };
 
     const updateWaterGoal = async (waterGoal) => {

@@ -20,6 +20,13 @@ const provider = new GoogleAuthProvider();
 /* Firebase Realtime Database mechanism */
 export const database = getDatabase(app);
 
+const init_data = {
+  water_goal: {
+    value: 0,
+    goal: 10,
+  },
+}
+
 const formatAuthUser = (user) => ({
   uid: user.uid,
   email: user.email,
@@ -118,6 +125,7 @@ export function useFirebaseAuth() {
         }).then(() => {
           console.log("user db created");
         });
+        set(ref(database, `data/${result.user.uid}/`), init_data);
         setEnrolled(true);
         return {
           error: false,
@@ -149,6 +157,7 @@ export function useFirebaseAuth() {
             enrolled: false,
             role: null,
           });
+          set(ref(database, `data/${result.user.uid}/`), init_data);
           return {
             error: false,
             route: "/auth/enroll",
@@ -189,9 +198,10 @@ export function useFirebaseAuth() {
               creationTime: result.user.metadata.creationTime,
               lastSignInTime: result.user.metadata.lastSignInTime,
             },
-            enrolled: false,
+            enrolled: true,
             role: data.title,
           });
+          set(ref(database, `data/${result.user.uid}/`), init_data);
           setEnrolled(true);
           return {
             error: false,

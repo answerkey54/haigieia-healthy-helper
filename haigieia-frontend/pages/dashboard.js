@@ -49,7 +49,6 @@ function Dashboard() {
 
     // Generate a response to the user's input text using the Dialogflow API. Then display the response using Typed.js
     useEffect(() => {
-        console.log("active listening triggered");
         if (text !== "" && !activeListening) {
             console.log("Completed: " + text);
             setConversation((conversation) => [

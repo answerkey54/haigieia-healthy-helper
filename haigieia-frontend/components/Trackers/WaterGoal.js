@@ -14,8 +14,7 @@ import {
     UnstyledButton,
     useMantineTheme,
 } from "@mantine/core";
-import { useId } from "@mantine/hooks";
-import { useCountUp } from "react-countup";
+import CountUp from "react-countup";
 import React, { useEffect, useRef, useState } from "react";
 import { IconBottle, IconGlassFull } from "@tabler/icons";
 import { useDatabase } from "../../context/userDataContext";
@@ -165,9 +164,6 @@ function WaterGoal() {
     const { classes } = useStyles();
     const [view, setView] = useState(true);
 
-    console.log(waterGoal, loading);
-
-    //FIXME - This is placeholder data, it will be replace with a firebase call
     const water_goal = {
         title: "Water",
         unit: "glasses",
@@ -188,19 +184,16 @@ function WaterGoal() {
                 const percent = parseInt(
                     (waterGoal.value / waterGoal.goal) * 100
                 );
-                
-               
             }, 100);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [waterGoal]);
+    }, [waterGoal, view, loading]);
 
     const toggleView = () => {
         if (view) {
             setView(false);
         } else {
             setView(true);
-
         }
     };
 
@@ -211,7 +204,7 @@ function WaterGoal() {
         >
             {loading ? (
                 <Center>
-                    <Skeleton height={16} radius='md' />
+                    <Skeleton height={16} radius="md" />
                     <Skeleton height={120} circle mb="xl" />
                     <Skeleton height={8} radius="xl" />
                 </Center>
@@ -236,9 +229,13 @@ function WaterGoal() {
                                         order={2}
                                         className={classes.countup}
                                     >
-                                        <div id="counter" ref={counter}>
-                                            0%
-                                        </div>
+                                        <CountUp start={0} end={parseInt((waterGoal.value/waterGoal.goal)*100)} duration={3} suffix="%" redraw>
+                                            {({ countUpRef }) => (
+                                                <div>
+                                                    <span ref={countUpRef} />
+                                                </div>
+                                            )}
+                                        </CountUp>
                                     </Title>
                                 </div>
                             </div>
