@@ -4,9 +4,12 @@ import { useFirebaseDatabase } from '../firebase/firebaseDatabase';
 const userDataContext = createContext({
   waterGoal: null,
   mealLog: null,
+  mainGoal: null,
   nutritionLog: null,
   loading: true,
-  setWaterGoal: async () => {},
+  setWaterLevel: async () => {},
+  updateWaterLevel: async () => {},
+  setMainGoal: async () => {},
   appendMealLog: async () => {},
   updateNutritionLog: async () => {},
 });

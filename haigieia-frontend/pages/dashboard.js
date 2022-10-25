@@ -15,7 +15,7 @@ import {
     ActionIcon,
     Grid,
 } from "@mantine/core";
-import { IconMicrophone, IconX } from "@tabler/icons";
+import { IconX } from "@tabler/icons";
 import Dictaphone from "../components/Dictaphone";
 import DashboardCard from "../components/DashboardCard";
 import MainGoal from "../components/Trackers/MainGoal";
@@ -23,9 +23,11 @@ import WaterGoal from "../components/Trackers/WaterGoal";
 import NutritionBreakdown from "../components/Trackers/NutritionBreakdown";
 import EmojiIcon from "../shared/EmojiIcon";
 import MealLog from "../components/Trackers/MealLog";
+import { useDatabase } from "../context/userDataContext";
 
 function Dashboard() {
     const { authUser, loading, enrolled } = useAuth();
+    const { updateWaterLevel } = useDatabase();
     const theme = useMantineTheme();
     const router = useRouter();
     const [text, setText] = useState("");
@@ -55,7 +57,13 @@ function Dashboard() {
                 { text: text, type: "user" },
                 ...conversation,
             ]);
-            var response = "Hello, how are you?";
+            // if text contains 'water' call updateWaterGoal from useDatabase
+            var response = "Sorry, I didn't understand that.";
+            if (text.includes("water")) {
+                updateWaterLevel(1);
+                response = "Okay, I'm adding a glass of water to your log.";
+            }
+            
             // wait 2 seconds to simulate a delay in the response
             setTimeout(() => {
                 setConversation((conversation) => [
@@ -63,7 +71,7 @@ function Dashboard() {
                     ...conversation,
                 ]);
                 setType(true);
-            }, 2000);
+            }, 1000);
             console.log(conversation);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

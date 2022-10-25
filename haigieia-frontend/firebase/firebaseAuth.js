@@ -25,6 +25,28 @@ const init_data = {
     value: 0,
     goal: 10,
   },
+  main_goal: [
+    {
+      "goal": 2200,
+      "title": "Calories",
+      "value": 0
+    },
+    {
+      "goal": 100,
+      "title": "Protein",
+      "value ": 0
+    },
+    {
+      "goal": 200,
+      "title": "Carbs",
+      "value": 0
+    },
+    {
+      "goal": 100,
+      "title": "Fat",
+      "value": 0
+    }
+  ],
 }
 
 const formatAuthUser = (user) => ({

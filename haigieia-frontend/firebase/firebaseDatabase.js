@@ -7,6 +7,7 @@ export function useFirebaseDatabase() {
     const { authUser } = useAuth();
     const [waterGoal, setWaterGoal] = useState(null);
     const [mealLog, setMealLog] = useState(null);
+    const [mainGoal, setMainGoal] = useState(null);
     const [nutritionLog, setNutritionLog] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -34,6 +35,7 @@ export function useFirebaseDatabase() {
             });
 
         setWaterGoal(user.water_goal);
+        setMainGoal(user.main_goal);
         setMealLog(user.mealLog);
         setNutritionLog(user.nutritionLog);
         console.log("user not found");
@@ -46,12 +48,29 @@ export function useFirebaseDatabase() {
             const data = snapshot.val();
             setWaterGoal(data);
         });
+        const mainGoalRef = ref(database, `data/${authUser.uid}/main_goal`);
+        onValue(mainGoalRef, (snapshot) => {
+            const data = snapshot.val();
+            setMainGoal(data);
+        });
     };
 
-    const updateWaterGoal = async (waterGoal) => {
+    const setWaterLevel = async (waterGoal) => {
         const userRef = ref(database);
-        await set(child(userRef, `users/${authUser.uid}/waterGoal`), waterGoal);
+        await set(child(userRef, `data/${authUser.uid}/water_goal/value`), waterGoal);
         setWaterGoal(waterGoal);
+    };
+
+    const updateWaterLevel = async (waterLevel) => {
+        const userRef = ref(database);
+        await set(child(userRef, `data/${authUser.uid}/water_goal/value`), waterGoal.value+waterLevel);
+
+    };
+
+    const updateMainGoal = async (mainGoal) => {
+        const userRef = ref(database);
+        await set(child(userRef, `users/${authUser.uid}/mainGoal`), mainGoal);
+        setMainGoal(mainGoal);
     };
 
     const appendMealLog = async (mealLog) => {
@@ -71,10 +90,13 @@ export function useFirebaseDatabase() {
 
     return {
         waterGoal,
+        mainGoal,
         mealLog,
         nutritionLog,
         loading,
-        updateWaterGoal,
+        setWaterLevel,
+        updateWaterLevel,
+        updateMainGoal,
         appendMealLog,
         updateNutritionLog,
     };
