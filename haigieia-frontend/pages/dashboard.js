@@ -15,6 +15,7 @@ import {
     ActionIcon,
     Grid,
     Button,
+    createStyles,
 } from "@mantine/core";
 import { IconX } from "@tabler/icons";
 import Dictaphone from "../components/Dictaphone";
@@ -25,7 +26,34 @@ import NutritionBreakdown from "../components/Trackers/NutritionBreakdown";
 import EmojiIcon from "../shared/EmojiIcon";
 import MealLog from "../components/Trackers/MealLog";
 import { useDatabase } from "../context/userDataContext";
+import { useListState } from "@mantine/hooks";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Link from "next/link";
+
+const useStyles = createStyles((theme) => ({
+    item: {
+      ...theme.fn.focusStyles(),
+      display: 'flex',
+      alignItems: 'center',
+      borderRadius: theme.radius.md,
+      border: `1px solid ${
+        theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2]
+      }`,
+      padding: `${theme.spacing.sm}px ${theme.spacing.xl}px`,
+      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.white,
+      marginBottom: theme.spacing.sm,
+    },
+  
+    itemDragging: {
+      boxShadow: theme.shadows.sm,
+    },
+  
+    symbol: {
+      fontSize: 30,
+      fontWeight: 700,
+      width: 60,
+    },
+  }));
 
 function Dashboard() {
     const { authUser, loading, enrolled } = useAuth();
@@ -131,6 +159,44 @@ function Dashboard() {
             <Text size="sm">{item.text}</Text>
         </Paper>
     ));
+
+    const components = [
+        {
+            title: "Main Goal",
+            component: <MainGoal />,
+        },
+        {
+            title: "Water Goal",
+            component: <WaterGoal />,
+
+        },
+        {
+            title: "Nutrition Breakdown",
+            component: <NutritionBreakdown />,
+        },
+        {
+            title: "Meal Log",
+            component: <MealLog />,
+        },
+    ]
+
+    const [state, handlers] = useListState(components);
+    const { classes, cx } = useStyles();
+
+    const items = state.map((item, index) => (
+        <Draggable key={item.title} index={index} draggableId={item.title}>
+          {(provided, snapshot) => (
+            <div
+              className={cx(classes.item, { [classes.itemDragging]: snapshot.isDragging })}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              ref={provided.innerRef}
+            >
+              <DashboardCard title={item.title} component={item.component} />
+            </div>
+          )}
+        </Draggable>
+      ));
 
     return (
         <Container size="xl">
@@ -249,6 +315,33 @@ function Dashboard() {
                             />
                             <DashboardCard component={<MealLog />} span={4} />
                         </Grid>
+                    </Container>
+                    <Container size="xl" mb={50}>
+                        <DragDropContext
+                            onDragEnd={({ destination, source }) =>
+                                handlers.reorder({
+                                    from: source.index,
+                                    to: destination?.index || 0,
+                                })
+                            }
+                        >
+                            <Grid grow>
+                            <Droppable
+                                droppableId="dnd-list"
+                                direction="horizontal"
+                            >
+                                {(provided) => (
+                                    <div
+                                        {...provided.droppableProps}
+                                        ref={provided.innerRef}
+                                    >
+                                        {items}
+                                        {provided.placeholder}
+                                    </div>
+                                )}
+                            </Droppable>
+                            </Grid>
+                        </DragDropContext>
                     </Container>
                 </>
             )}
