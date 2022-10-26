@@ -229,13 +229,7 @@ function WaterGoal() {
                                         order={2}
                                         className={classes.countup}
                                     >
-                                        <CountUp start={0} end={parseInt((waterGoal.value/waterGoal.goal)*100)} duration={3} suffix="%" redraw>
-                                            {({ countUpRef }) => (
-                                                <div>
-                                                    <span ref={countUpRef} />
-                                                </div>
-                                            )}
-                                        </CountUp>
+                                        {parseInt((waterGoal.value/waterGoal.goal)*100)}%
                                     </Title>
                                 </div>
                             </div>
