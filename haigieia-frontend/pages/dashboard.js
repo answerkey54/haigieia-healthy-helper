@@ -14,6 +14,7 @@ import {
     Collapse,
     ActionIcon,
     Grid,
+    Button,
 } from "@mantine/core";
 import { IconX } from "@tabler/icons";
 import Dictaphone from "../components/Dictaphone";
@@ -24,17 +25,19 @@ import NutritionBreakdown from "../components/Trackers/NutritionBreakdown";
 import EmojiIcon from "../shared/EmojiIcon";
 import MealLog from "../components/Trackers/MealLog";
 import { useDatabase } from "../context/userDataContext";
+import Link from "next/link";
 
 function Dashboard() {
     const { authUser, loading, enrolled } = useAuth();
-    const { updateWaterLevel } = useDatabase();
-    const theme = useMantineTheme();
+    const { updateWaterLevel, updateMealLog, updateMainGoal } = useDatabase();
     const router = useRouter();
     const [text, setText] = useState("");
     const [open, setOpen] = useState(false);
     const [activeListening, setActiveListening] = useState(false);
     const [conversation, setConversation] = useState([]);
     const [Type, setType] = useState(false);
+
+    console.log(authUser, loading, enrolled);
 
     useEffect(() => {
         if (!loading && !authUser && !enrolled) {
@@ -63,7 +66,23 @@ function Dashboard() {
                 updateWaterLevel(1);
                 response = "Okay, I'm adding a glass of water to your log.";
             }
-            
+            if (text.includes("quesadilla")) {
+                const meal = {
+                    item: "Quesadilla",
+                    calories: 500,
+                    protein: 50,
+                    carbs: 30,
+                    fat: 25,
+                    weight: 250,
+                };
+                updateMealLog(meal);
+                updateMainGoal("calories", 500);
+                updateMainGoal("protein", 50);
+                updateMainGoal("carbs", 30);
+                updateMainGoal("fat", 25);
+                response = "Okay, I'm adding a quesadilla to your meal log.";
+            }
+
             // wait 2 seconds to simulate a delay in the response
             setTimeout(() => {
                 setConversation((conversation) => [
@@ -115,9 +134,27 @@ function Dashboard() {
 
     return (
         <Container size="xl">
-            {loading ? (
+            {loading || !authUser ? (
                 <Center style={{ height: "80vh" }}>
-                    <Loader size="xl" />
+                    {loading ? (
+                        <Loader size="xl" />
+                    ) : (
+                        <>
+                            <Text size="xl">
+                                You are not authorized to view this page.
+                            </Text>
+                            <Link href={authUser ? "/dashboard" : "/"} passHref>
+                                <Button
+                                    component="a"
+                                    variant="subtle"
+                                    size="md"
+                                    radius="lg"
+                                >
+                                    Take me back home
+                                </Button>
+                            </Link>
+                        </>
+                    )}
                 </Center>
             ) : (
                 <>
@@ -206,7 +243,10 @@ function Dashboard() {
                         <Grid grow>
                             <DashboardCard component={<MainGoal />} span={4} />
                             <DashboardCard component={<WaterGoal />} span={4} />
-                            <DashboardCard component={<NutritionBreakdown />} span={4} />
+                            <DashboardCard
+                                component={<NutritionBreakdown />}
+                                span={4}
+                            />
                             <DashboardCard component={<MealLog />} span={4} />
                         </Grid>
                     </Container>

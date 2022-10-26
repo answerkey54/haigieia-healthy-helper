@@ -9,8 +9,8 @@ const userDataContext = createContext({
   loading: true,
   setWaterLevel: async () => {},
   updateWaterLevel: async () => {},
-  setMainGoal: async () => {},
-  appendMealLog: async () => {},
+  updateMealLog: async () => {},
+  updateMainGoal: async () => {},
   updateNutritionLog: async () => {},
 });
 

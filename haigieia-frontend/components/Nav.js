@@ -92,7 +92,7 @@ const Icon = (props) => {
 };
 
 export function NavbarMinimal(props) {
-    const [active, setActive] = useState(2);
+    const [active, setActive] = useState(0);
     const [opened, setOpened] = useState(false);
     const { authUser, loading, signOutUser } = useAuth();
 
