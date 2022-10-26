@@ -1,3 +1,5 @@
+import {*} with "bi_enc.jac";
+import {*} with "tfm_ner.jac";
 node cai_state {
     has name;
     can init_wlk_ctx {
@@ -62,11 +64,14 @@ node dialogue_root:dialogue_state {
     }
     can process {
         visitor.wlk_ctx["respond"] = true;
+        if (visitor.wlk_ctx["prev_state"].context["name"] == "confirmation") {
+            visitor.wlk_ctx["entities"] = {}
+        }
         visitor.wlk_ctx["next_state"] = (-[intent_transition(intent==visitor.wlk_ctx["intent"])]->)[0];
     }
     can nlg {
         if (visitor.wlk_ctx["prev_state"].context["name"] == "confirmation") {
-            visitor.response = "Sorry I got your meal wrong. Starting over from the beginning... \n \n Hi! How can I help you be healthy today?"
+            visitor.response = "Sorry I got your meal wrong. Starting over from the beginning... \n \n Hi! How can I help you be healthy today?";
         } else {
             visitor.response = "Hi! How can I help you be healthy today?";
         }
@@ -140,10 +145,10 @@ node follow_up:dialogue_state {
         visitor.wlk_ctx["prev_state"] = here;
     }
     can nlg {
-        if (visitor.recorded_drink and !visitor.recorded_food) : visitor.response = "Thank you! Do you have anything to eat you'd like to report?";
-        elif (!visitor.recorded_drink and visitor.recorded_food) : visitor.response = "Thank you! Do you have anything to drink you'd like to report?";
+        if (visitor.recorded_drink and !visitor.recorded_food) : visitor.response = "Thank you! Did you have anything to eat you'd like to report?";
+        elif (!visitor.recorded_drink and visitor.recorded_food) : visitor.response = "Thank you! Did you have anything to drink you'd like to report?";
         else {
-            visitor.response = "Thank you! Do you have anything else you'd like to record?"
+            visitor.response = "Thank you! Do you have anything else you'd like to record?";
         }
     }
 }
@@ -159,11 +164,11 @@ node confirmation:dialogue_state {
         visitor.wlk_ctx["prev_state"] = here;
     }
     can nlg {
-        meal_string = ""
-        for(i = 0; i < visitor.wlk_ctx["entities"]["quantity_f"].length; ++i) {
+        meal_string = "";
+        for i = 0 to i < visitor.wlk_ctx["entities"]["quantity_f"].length by i+=1 {
             meal_string += visitor.wlk_ctx["entities"]["quantity_f"][i] + " " + visitor.wlk_ctx["entities"]["food"][i] + " and ";
         }
-        for(i = 0; i < visitor.wlk_ctx["entities"]["quantity_d"].length; ++i) {
+        for i = 0 to i < visitor.wlk_ctx["entities"]["quantity_d"].length by i+=1 {
             meal_string += visitor.wlk_ctx["entities"]["quantity_d"][i] + " " + visitor.wlk_ctx["entities"]["drink"][i];
         }
         visitor.response = "You had " + meal_string + ". Is that correct?";
@@ -239,7 +244,7 @@ walker talk {
     }
     cai_state {
         if (!question and interactive) {
-            question = std.input("Meal? (Ctrl-C to exit)> "); // TODO: get input from STT module
+            question = std.input("Entry (Ctrl-C to exit)> "); // TODO: get input from STT module
             here::init_wlk_ctx;
         } elif (!question and !interactive){
             std.err("ERROR: question is required for non-interactive mode");
@@ -265,6 +270,6 @@ walker talk {
 walker init {
     root {
         spawn here --> graph::haigiea_graph;
-        spawn here --> walker::talk;
+        spawn here walker::talk;
     }
 }
