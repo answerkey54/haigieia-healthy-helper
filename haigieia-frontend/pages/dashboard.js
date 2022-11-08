@@ -161,7 +161,7 @@ function Dashboard() {
                 <>
                     <Title order={4}>
                         Welcome,{" "}
-                        <span style={{ color: "steelblue" }}>
+                        <span style={{color: "#7aa6d2"}} >
                             {authUser.displayName}
                         </span>{" "}
                     </Title>

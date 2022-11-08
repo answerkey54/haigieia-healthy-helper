@@ -1,19 +1,27 @@
 import { AuthUserProvider } from "../context/authUserContext";
 import { UserDataProvider } from "../context/userDataContext";
-import { MantineProvider } from "@mantine/core";
+import { MantineProvider, ColorSchemeProvider, ColorScheme } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
 import "animate.css";
 import "../styles/globals.css";
 import { ApplicationContainer } from "../components/ApplicationContainer";
 import "regenerator-runtime/runtime";
+import { useState } from "react";
 
 function MyApp({ Component, pageProps }) {
+
+  const [colorScheme, setColorScheme] = useState('light');
+  const toggleColorScheme = (value) =>
+    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
+
+
     return (
+      <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
         <MantineProvider
             withGlobalStyles
             withNormalizeCSS
             theme={{
-                colorScheme: "light",
+                colorScheme,
                 colors: {
                   primary: [
                     "#b3cce5",
@@ -120,6 +128,7 @@ function MyApp({ Component, pageProps }) {
                 </AuthUserProvider>
             </NotificationsProvider>
         </MantineProvider>
+      </ColorSchemeProvider>
     );
 }
 

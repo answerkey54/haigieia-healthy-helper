@@ -12,6 +12,7 @@ import {
     Popover,
     Text,
     Card,
+    useMantineColorScheme,
 } from "@mantine/core";
 import {
     TablerIcon,
@@ -24,6 +25,8 @@ import {
     IconSettings,
     IconLogout,
     IconSwitchHorizontal,
+    IconSun,
+    IconMoonStars,
 } from "@tabler/icons";
 import { NextLink } from "@mantine/next";
 
@@ -95,6 +98,7 @@ export function NavbarMinimal(props) {
     const [active, setActive] = useState(0);
     const [opened, setOpened] = useState(false);
     const { authUser, loading, signOutUser } = useAuth();
+    const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 
     const links = data.map((link, index) => (
         <NavbarLink
@@ -114,7 +118,28 @@ export function NavbarMinimal(props) {
                 </Stack>
             </Navbar.Section>
             <Navbar.Section>
-                <Stack justify="center" spacing={0}>
+                <Stack justify="center" align="center" spacing={0}>
+                    <ActionIcon
+                        onClick={() => toggleColorScheme()}
+                        size="lg"
+                        sx={(theme) => ({
+                            backgroundColor:
+                                theme.colorScheme === "dark"
+                                    ? theme.colors.dark[6]
+                                    : theme.colors.gray[0],
+                            color:
+                                theme.colorScheme === "dark"
+                                    ? theme.colors.yellow[4]
+                                    : theme.colors.blue[6],
+                            marginBottom: 15,
+                        })}
+                    >
+                        {colorScheme === "dark" ? (
+                            <IconSun size={18} />
+                        ) : (
+                            <IconMoonStars size={18} />
+                        )}
+                    </ActionIcon>
                     {loading || !authUser ? (
                         <NavbarLink
                             icon={IconUser}
@@ -131,28 +156,34 @@ export function NavbarMinimal(props) {
                             onChange={setOpened}
                         >
                             <Popover.Target>
-                                <UnstyledButton radius="md" onClick={() => setOpened((o) => !o)}>
-                                    <Avatar radius="xl" color="blue" src={authUser ? authUser.photoURL : ""} />
+                                <UnstyledButton
+                                    radius="md"
+                                    onClick={() => setOpened((o) => !o)}
+                                >
+                                    <Avatar
+                                        radius="xl"
+                                        color="primary.5"
+                                        src={authUser ? authUser.photoURL : ""}
+                                    />
                                 </UnstyledButton>
                             </Popover.Target>
                             <Popover.Dropdown>
-                               
-                                    <Stack padding={0} spacing={0}>
-                                        <Text size="md" weight={500}>
-                                            {authUser ? authUser.displayName : ""}
-                                        </Text>
-                                        <Text size="xs" color="gray">
-                                            {authUser ? authUser.email: ""}
-                                        </Text>
-                                        <ActionIcon
-                                            onClick={() => signOutUser()}
-                                            color="red"
-                                            size="sm" variant="light"
-                                            
-                                        >
-                                            <IconLogout size={14} />
-                                        </ActionIcon>
-                                    </Stack>
+                                <Stack padding={0} spacing={0}>
+                                    <Text size="md" weight={500}>
+                                        {authUser ? authUser.displayName : ""}
+                                    </Text>
+                                    <Text size="xs" color="gray">
+                                        {authUser ? authUser.email : ""}
+                                    </Text>
+                                    <ActionIcon
+                                        onClick={() => signOutUser()}
+                                        color="red"
+                                        size="sm"
+                                        variant="light"
+                                    >
+                                        <IconLogout size={14} />
+                                    </ActionIcon>
+                                </Stack>
                             </Popover.Dropdown>
                         </Popover>
                     )}
