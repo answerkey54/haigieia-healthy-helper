@@ -121,7 +121,7 @@ function MealLog() {
     };
 
     return (
-        <Container style={{ backgroundColor: "#f6f6f6" }} p="sm">
+        <Container sx={(theme) => ({ backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.fn.lighten(theme.colors.gray[1], 0.1), borderRadius: '10px' })} p="sm">
             <Title order={3} align="center" mb={30}>
                 Recent Meals
             </Title>

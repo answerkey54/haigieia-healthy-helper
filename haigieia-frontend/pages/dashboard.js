@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter, withRouter } from "next/router";
 import Typed from "typed.js";
 import { useAuth } from "../context/authUserContext";
 import {
@@ -36,8 +36,9 @@ function Dashboard() {
     const [activeListening, setActiveListening] = useState(false);
     const [conversation, setConversation] = useState([]);
     const [Type, setType] = useState(false);
+    const theme = useMantineTheme();
 
-    console.log(authUser, loading, enrolled);
+    //console.log(authUser, loading, enrolled);
 
     useEffect(() => {
         if (!loading && !authUser && !enrolled) {
@@ -184,7 +185,6 @@ function Dashboard() {
                                     p="sm"
                                     mb="sm"
                                     style={{
-                                        backgroundColor: "#f6f6f6",
                                         borderRadius: "10px",
                                         maxHeight: "400px",
                                         overflowY: "scroll",
@@ -196,8 +196,8 @@ function Dashboard() {
                                             radius="md"
                                             p="xs"
                                             m="xs"
-                                            style={{
-                                                backgroundColor: "#ffffff",
+                                            styles={(theme) => ({
+                                               
                                                 maxWidth: "80%",
                                                 float: "left",
                                                 marginRight: `calc(50% - ${
@@ -210,12 +210,12 @@ function Dashboard() {
                                                             250) *
                                                     50
                                                 }%)`,
-                                            }}
+                                            })}
                                         >
                                             <Text size="sm">
                                                 {text}
                                                 <Loader
-                                                    color="dark"
+                                                    color={theme.colors.blue[5]}
                                                     size="xs"
                                                     variant="dots"
                                                     pl={1}

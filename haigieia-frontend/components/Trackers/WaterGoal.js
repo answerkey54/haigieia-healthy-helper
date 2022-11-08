@@ -25,7 +25,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
         marginRight: "auto",
         minWidth: "250px",
         padding: "10px",
-        backgroundColor: "#f6f6f6",
+        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.fn.lighten(theme.colors.gray[1], 0.1),
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -54,7 +54,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     cover: {
         position: "absolute",
         bottom: 0,
-        backgroundColor: "#f6f6f6",
+        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.fn.lighten(theme.colors.gray[1], 0.1),
         width: "160px",
         height: "150px",
         clipPath:
@@ -199,7 +199,7 @@ function WaterGoal() {
 
     return (
         <Container
-            style={{ backgroundColor: "#f6f6f6", minWidth: "200px" }}
+        sx={(theme) => ({ backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.fn.lighten(theme.colors.gray[1], 0.1), borderRadius: '10px', minWidth: "200px" })}
             p="sm"
         >
             {loading ? (
