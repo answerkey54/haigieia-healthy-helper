@@ -5,7 +5,7 @@ node cai_state {
     can init_wlk_ctx {
         new_wlk_ctx = {
             "intent": null,
-            "entities": {},
+            "entities": {"pairs" : [], "singles" : {"food" : [], "drink": [], "quantity": []}, "remove" : []},
             "prev_state": null,
             "next_state": null,
             "respond": false
@@ -43,14 +43,23 @@ node dialogue_state:cai_state {
 
     can extract_entities {
         res = tfm_ner.extract_entity(visitor.question);
-        for ent in res {
-            ent_type = ent["entity_value"];
-            ent_text = ent["entity_text"];
-            if (!(ent_type in visitor.wlk_ctx["entities"])){
-                visitor.wlk_ctx["entities"][ent_type] = [];
+        res_1, res_2 = tee(iterable)
+        next(res_2, None)
+        pair_res = zip(res_1, res_2)
+        for ent1, ent2 in pair_res {
+            ent_val_1 = ent1["entity_value"];
+            ent_text_1 = ent1["entity_text"];
+            ent_val_2 = ent2["entity_value"];
+            ent_text_2 = ent2["entity_text"];
+            
+            if (ent_val_1 == "quantity" and (ent_val_2 == "food" or ent_val_2 == "drink")) {
+                // append val and text to pairs list
+                entity_pair_1 = (ent_val_1, ent_text_1)
+                entity_pair_2 = (ent_val_2, ent_text_2)
+                visitor.wlk_ctx["entities"]["pairs"].l::append((entity_pair_1, entity_pair_2));
             }
-            visitor.wlk_ctx["entities"][ent_type].l::append(ent_text);
         }
+        print("entities = ", visitor.wlk_ctx["entities"]["pairs"]) // DEBUG
     }
 
     can nlu {}
@@ -64,9 +73,6 @@ node dialogue_root:dialogue_state {
     }
     can process {
         visitor.wlk_ctx["respond"] = true;
-        if (visitor.wlk_ctx["prev_state"].context["name"] == "confirmation") {
-            visitor.wlk_ctx["entities"] = {}
-        }
         visitor.wlk_ctx["next_state"] = (-[intent_transition(intent==visitor.wlk_ctx["intent"])]->)[0];
     }
     can nlg {
@@ -78,16 +84,16 @@ node dialogue_root:dialogue_state {
     }
 }
 
-node record_food:dialogue_state {
-    has name = "record_food";
+node record:dialogue_state {
+    has name = "record";
     can nlu {
         if (!visitor.wlk_ctx["intent"]): ::classify_intent;
         ::extract_entities;
     }
     can process {
         required_entities = -[entity_transition]->.edge[0].context["entities"];
-        // Check if we have both food and quantity entities
-        if (vector.sort_by_key(visitor.wlk_ctx["entities"].d::keys) == vector.sort_by_key(required_entities)) {
+        // Check if we have any non-paired entities
+        if (visitor.wlk_ctx["entities"]["singles"]) {
             visitor.recorded_food = true;
             visitor.wlk_ctx["next_state"] = -[entity_transition]->[0];
             visitor.wlk_ctx["prev_state"] = here;
@@ -97,40 +103,14 @@ node record_food:dialogue_state {
         }
     }
     can nlg {
-        if ("food" in visitor.wlk_ctx["entities"] and "quantity_f" not in visitor.wlk_ctx["entities"]):
-            visitor.response = "How much " + visitor.wlk_ctx["entities"]["food"][0] + " did you eat?";
-        elif ("quantity_f" in visitor.wlk_ctx["entities"] and "food" not in visitor.wlk_ctx["entities"]):
-            visitor.response = "You ate " + visitor.wlk_ctx["entities"]["quantity_f"][0] + " of what food again?";
-        else:
-            visitor.response = "What did you eat today?"; 
-    }
-}
-
-node record_drink:dialogue_state {
-    has name = "record_drink";
-    can nlu {
-        if (!visitor.wlk_ctx["intent"]): ::classify_intent;
-        ::extract_entities;
-    }
-    can process {
-        required_entities = -[entity_transition]->.edge[0].context["entities"];
-        // Check if we have both drink and quantity entities
-        if (vector.sort_by_key(visitor.wlk_ctx["entities"].d::keys) == vector.sort_by_key(required_entities)) {
-            visitor.recorded_drink = true;
-            visitor.wlk_ctx["next_state"] = -[entity_transition]->[0];
-            visitor.wlk_ctx["prev_state"] = here;
-        } else {
-            visitor.wlk_ctx["respond"] = true;
-            visitor.wlk_ctx["next_state"] = here;
-        }
-    }
-    can nlg {
-        if ("drink" in visitor.wlk_ctx["entities"] and "quantity_d" not in visitor.wlk_ctx["entities"]):
-            visitor.response = "How much " + visitor.wlk_ctx["entities"]["drink"][0] + " did you drink?";
-        elif ("quantity_d" in visitor.wlk_ctx["entities"] and "drink" not in visitor.wlk_ctx["entities"]):
-            visitor.response = "You drank " + visitor.wlk_ctx["entities"]["quantity_d"][0] + " of what again?";
-        else:
-            visitor.response = "What did you drink today?";
+        response_string = "";
+        for food in visitor.wlk_ctx["entities"]["singles"]["food"]:
+            response_string += "How much " + food + " did you eat?\n";
+        for drink in visitor.wlk_ctx["entities"]["singles"]["drink"]:
+            response_string +=  "How much " + drink + " did you drink?\n";
+        for quantity in visitor.wlk_ctx["entities"]["singles"]["quantity"]:
+            response_string += "You had " + quantity + " of what again?\n";
+        visitor.response = response_string;
     }
 }
 
@@ -145,11 +125,7 @@ node follow_up:dialogue_state {
         visitor.wlk_ctx["prev_state"] = here;
     }
     can nlg {
-        if (visitor.recorded_drink and !visitor.recorded_food) : visitor.response = "Thank you! Did you have anything to eat you'd like to report?";
-        elif (!visitor.recorded_drink and visitor.recorded_food) : visitor.response = "Thank you! Did you have anything to drink you'd like to report?";
-        else {
-            visitor.response = "Thank you! Do you have anything else you'd like to record?";
-        }
+        visitor.response = "Thank you! Do you have anything else you'd like to record?";
     }
 }
 
@@ -165,11 +141,8 @@ node confirmation:dialogue_state {
     }
     can nlg {
         meal_string = "";
-        for i = 0 to i < visitor.wlk_ctx["entities"]["quantity_f"].length by i+=1 {
-            meal_string += visitor.wlk_ctx["entities"]["quantity_f"][i] + " " + visitor.wlk_ctx["entities"]["food"][i] + " and ";
-        }
-        for i = 0 to i < visitor.wlk_ctx["entities"]["quantity_d"].length by i+=1 {
-            meal_string += visitor.wlk_ctx["entities"]["quantity_d"][i] + " " + visitor.wlk_ctx["entities"]["drink"][i];
+        for i = 0 to i < visitor.wlk_ctx["entities"]["pairs"].length by i+=1 {
+            meal_string += visitor.wlk_ctx["entities"]["pairs"][i][0][1] + " " + visitor.wlk_ctx["entities"]["pairs"][i][1][1] + " and ";
         }
         visitor.response = "You had " + meal_string + ". Is that correct?";
     }
@@ -179,6 +152,7 @@ node meal_confirmed:dialogue_state{
     has name = "meal confirmed";
     can process {
         // record all data in database and update UI
+        // response = request.post/get(url, data, headers)
     }
     can nlg {
         visitor.response = "Thank you! Your food and water intake have been updated. Have a healthy day!";
@@ -192,8 +166,51 @@ node meal_canceled:dialogue_state{
     }
 }
 
+node change_meal:dialogue_state {
+    has name = "change meal";
+    can nlu {
+        ::classify_intent;
+    }
+    can process {
+        if (visitor.wlk_ctx["prev_state"]): visitor.wlk_ctx["respond"] = true;
+        visitor.wlk_ctx["next_state"] = (-[intent_transition(intent==visitor.wlk_ctx["intent"])]->)[0];
+        visitor.wlk_ctx["prev_state"] = here;
+    }
+    can nlg {
+        visitor.response = "How would you like to change your meal?"
+    }
+}
+
+node remove:dialogue_state {
+    has name = "remove";
+    can extract_entities {
+        res = tfm_ner.extract_entity(visitor.question);
+        for ent in res {
+            ent_type = ent["entity_value"];
+            ent_text = ent["entity_text"];
+            visitor.wlk_ctx["entities"]["remove"].l::append((ent_type, ent_text));
+        }
+    }
+    can nlu {
+        ::classify_intent;
+        ::extract_entities;
+    }
+    can process {
+        for ent in visitor.wlk_ctx["entities"]["remove"]:
+            for pair in visitor.wlk_ctx["entities"]["pairs"]:
+                if (pair[1][1] == ent): visitor.wlk_ctx["entities"]["pairs"].l::remove(pair)
+        if (visitor.wlk_ctx["prev_state"]): visitor.wlk_ctx["respond"] = true;
+        visitor.wlk_ctx["next_state"] = (-[intent_transition(intent==visitor.wlk_ctx["intent"])]->)[0];
+        visitor.wlk_ctx["prev_state"] = here;
+    }
+    can nlg {
+       visitor.response = "Removed! Anything you'd like to add to the meal?"
+    }
+}
+
 edge entity_transition {
     has entities;
+    has pairs;
 }
 
 edge intent_transition {
@@ -211,6 +228,7 @@ graph haigiea_graph {
         meal_confirmed = spawn node::meal_confirmed;
         meal_canceled = spawn node::meal_canceled;
 
+        // OLD GRAPH
         // prompt user to say what they have eaten or drank today
         dialogue_root -[intent_transition(intent="record drink")]-> record_drink;
         dialogue_root -[intent_transition(intent="record food")]-> record_food;
@@ -224,7 +242,28 @@ graph haigiea_graph {
         confirmation -[intent_transition(intent="yes")]-> meal_confirmed;
         confirmation -[intent_transition(intent="no")]-> dialogue_root; // maybe change_meal
         confirmation -[intent_transition(intent="cancel")]-> meal_canceled;
-        // change_meal -[intent_transition(intent="record_drink")]-> record_drink; 
+
+        // NEW GRAPH
+        // prompt user to record meal
+        dialogue_root --> record; 
+        // if we have a pair of food/drink or both, go to follow up (Maybe self-loops here to get all entities)
+        record -[entity_transition(entities["singles"]!=[])]-> follow_up;
+        record -[entity_transition(entities["singles"]=[])]-> confirmation;
+        record -[intent_transition(intent="record")]-> record;
+        // ask if they have anything else to record
+        follow_up -[intent_transition(intent="record")]-> record;
+        follow_up -[intent_transition(intent="no")]-> confirmation;
+        // repeat meal and ask if it is correct
+        confirmation -[intent_transition(intent="yes")]-> meal_confirmed;
+        confirmation -[intent_transition(intent="change meal")]-> change_meal;
+        confirmation -[intent_transition(intent="cancel")]-> meal_canceled;
+        // if they want to change meal, determine whether they want to add or remove an item
+        change_meal -[intent_transition(intent="record")]-> record;
+        change_meal -[intent_transition(intent="remove")]-> remove;
+        // remove does as it says, then ask if they want to record anything more
+        remove -[intent_transition(intent="record")]-> record;
+        remove -[intent_transition(intent="no")]-> confirmation;
+        
     }
 }
 
