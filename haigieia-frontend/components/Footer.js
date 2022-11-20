@@ -11,7 +11,7 @@ const useStyles = createStyles((theme) => ({
       bottom: 0,
       left: 0,
       right: 0,
-      backgroundColor: "#E1E1E1",
+      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[2],
 
       [theme.fn.smallerThan("xs")]: {
           height: "40px",

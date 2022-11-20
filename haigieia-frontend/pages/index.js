@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Link from "next/link";
 import { useAuth } from "../context/authUserContext";
-import { Button, Card, Center, Loader, Text } from "@mantine/core";
+import { Button, Card, Center, Container, Loader, Stack, Text, Title } from "@mantine/core";
 import EnrollModal from "../components/EnrollModal";
 
 export default function Home() {
@@ -15,13 +15,13 @@ export default function Home() {
       <Loader size="100" />
     </Center> 
     :
-    <div className="">
-      Hello World
+    <Container size="lg">
+      <Title align='center' mb={30} order={3}>Under Construction 🚧</Title>
       {!authUser ?
-        <div>
+        <Stack align="center">
           <Link href="/auth/create" passHref><Button component="a">Create Account</Button></Link>
           <Link href="/auth/login" passHref><Button component="a">Login</Button></Link> 
-        </div>
+        </Stack>
       :
       <div>
         <p>{authUser.displayName}</p>
@@ -32,7 +32,7 @@ export default function Home() {
         <button onClick={signOutUser}>Sign out</button>
       </div>
       }
-    </div>
+    </Container>
     }
     </>
   )

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { onValue, ref, child, get, set } from "firebase/database";
+import { onValue, ref, child, get, set, push } from "firebase/database";
 import { useAuth } from "../context/authUserContext";
 import { database } from "./firebaseAuth";
 
@@ -23,7 +23,6 @@ export function useFirebaseDatabase() {
         const user = await get(child(userRef, `data/${authUser.uid}`))
             .then((snapshot) => {
                 if (snapshot.exists()) {
-                    console.log(snapshot.val());
                     return snapshot.val();
                 } else {
                     console.log("No data available");
@@ -36,9 +35,8 @@ export function useFirebaseDatabase() {
 
         setWaterGoal(user.water_goal);
         setMainGoal(user.main_goal);
-        setMealLog(user.mealLog);
+        setMealLog(user.meal_log);
         setNutritionLog(user.nutritionLog);
-        console.log("user not found");
         setLoading(false);
     };
 
@@ -52,6 +50,11 @@ export function useFirebaseDatabase() {
         onValue(mainGoalRef, (snapshot) => {
             const data = snapshot.val();
             setMainGoal(data);
+        });
+        const mealLogRef = ref(database, `data/${authUser.uid}/meal_log`);
+        onValue(mealLogRef, (snapshot) => {
+            const data = snapshot.val();
+            setMealLog(data);
         });
     };
 
@@ -67,22 +70,26 @@ export function useFirebaseDatabase() {
 
     };
 
-    const updateMainGoal = async (mainGoal) => {
+    const updateMainGoal = async (category,newVal) => {
+        const categories = ['calories','protein','carbs','fat'];
+        // get index of category
+        const index = categories.indexOf(category);
+        console.log('Updating main goal for category: ',index);
         const userRef = ref(database);
-        await set(child(userRef, `users/${authUser.uid}/mainGoal`), mainGoal);
-        setMainGoal(mainGoal);
+        await set(child(userRef, `data/${authUser.uid}/main_goal/${index}/value`), mainGoal[index].value+newVal);
     };
 
-    const appendMealLog = async (mealLog) => {
+    const updateMealLog = async (meal) => {
         const userRef = ref(database);
-        await set(child(userRef, `users/${authUser.uid}/mealLog`), mealLog);
-        setMealLog(mealLog);
+        const index = mealLog ? mealLog.length : 0;
+        await set(child(userRef, `data/${authUser.uid}/meal_log/${index}`), meal);
     };
+
 
     const updateNutritionLog = async (nutritionLog) => {
         const userRef = ref(database);
         await set(
-            child(userRef, `users/${authUser.uid}/nutritionLog`),
+            child(userRef, `data/${authUser.uid}/nutrition_log`),
             nutritionLog
         );
         setNutritionLog(nutritionLog);
@@ -97,7 +104,7 @@ export function useFirebaseDatabase() {
         setWaterLevel,
         updateWaterLevel,
         updateMainGoal,
-        appendMealLog,
+        updateMealLog,
         updateNutritionLog,
     };
 }

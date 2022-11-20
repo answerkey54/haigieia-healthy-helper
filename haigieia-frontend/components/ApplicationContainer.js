@@ -23,14 +23,14 @@ export const ApplicationContainer = ({children}) => {
 
     return (
         <AppShell
-        styles={{
+        styles={(theme) => ({
             main: {
-                background: "#f0f0f0",
+                background: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
                 width: "100vw",
                 position: "relative",
                 zIndex: 1,
             }
-        }}
+        })}
         fixed
         navbarOffsetBreakpoint="xs"
         header={<HeaderComponent opened={opened} setOpened={setOpened} />}

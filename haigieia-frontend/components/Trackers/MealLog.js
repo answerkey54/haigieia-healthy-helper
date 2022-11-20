@@ -7,71 +7,18 @@ import {
     Group,
     Paper,
     Progress,
+    Skeleton,
     Stack,
     Text,
     Title,
 } from "@mantine/core";
 import { useElementSize, useHover } from "@mantine/hooks";
 import React, { useRef } from "react";
+import { useDatabase } from "../../context/userDataContext";
 
 function MealLog() {
+    const { mealLog, mainGoal, loading, updateMealLog } = useDatabase();
     //FIXME - This is a placeholder for the meal log. It will be replaced with a firebase call
-    const meals = [
-        {
-            item: "Chicken Breast",
-            weight: 250,
-            calories: 200,
-            protein: 30,
-            carbs: 0,
-            fat: 4,
-        },
-        {
-            item: "Rice",
-            weight: 100,
-            calories: 200,
-            protein: 4,
-            carbs: 40,
-            fat: 1,
-        },
-        {
-            item: "Broccoli",
-            weight: 100,
-            calories: 50,
-            protein: 2,
-            carbs: 10,
-            fat: 0,
-        },
-    ];
-    const goals = [
-        {
-            title: "Calories",
-            value: 3200,
-            goal: 2500,
-            unit: "kcal",
-            checkColor: "green",
-        },
-        {
-            title: "Protein",
-            value: 100,
-            goal: 150,
-            unit: "g",
-            checkColor: "blue",
-        },
-        {
-            title: "Carbs",
-            value: 200,
-            goal: 200,
-            unit: "g",
-            checkColor: "red",
-        },
-        {
-            title: "Fat",
-            value: 50,
-            goal: 100,
-            unit: "g",
-            checkColor: "yellow",
-        },
-    ];
 
     const MealCard = ({ meal, color }) => {
         const { hovered, ref } = useHover();
@@ -84,8 +31,8 @@ function MealLog() {
             .substring(0, 2);
 
         return (
-            <Paper shadow={hovered ? 'lg' : 'xs'} radius="md" p="sm" ref={ref}>
-                <Group spacing="sm" style={{minWidth: '200px'}}>
+            <Paper shadow={hovered ? "lg" : "xs"} radius="md" p="sm" ref={ref}>
+                <Group spacing="sm" style={{ minWidth: "200px" }}>
                     <Avatar
                         src={"image" in meal ? meal.image : null}
                         variant="filled"
@@ -110,21 +57,39 @@ function MealLog() {
                             <Text size="xs" color="gray">
                                 Protein
                             </Text>
-                            <Progress color={color} value={parseInt((meal.protein/goals[1].goal)*100)} style={{width: '50px'}} />
+                            <Progress
+                                color={color}
+                                value={parseInt(
+                                    (meal.protein / mainGoal[1].goal) * 100
+                                )}
+                                style={{ width: "50px" }}
+                            />
                         </Stack>
                         <Stack spacing={0} pl={10}>
                             <Title order={6}>{meal.carbs}g</Title>
                             <Text size="xs" color="gray">
                                 Carbs
                             </Text>
-                            <Progress color={color} value={parseInt((meal.carbs/goals[2].goal)*100)} style={{width: '50px'}}/>
+                            <Progress
+                                color={color}
+                                value={parseInt(
+                                    (meal.carbs / mainGoal[2].goal) * 100
+                                )}
+                                style={{ width: "50px" }}
+                            />
                         </Stack>
-                        <Stack spacing={0} pl={10} style={{ width: '50px'}}>
+                        <Stack spacing={0} pl={10} style={{ width: "50px" }}>
                             <Title order={6}>{meal.fat}g</Title>
                             <Text size="xs" color="gray">
                                 Fat
                             </Text>
-                            <Progress color={color} value={parseInt((meal.fat/goals[3].goal)*100)} style={{width: '50px'}}/>
+                            <Progress
+                                color={color}
+                                value={parseInt(
+                                    (meal.fat / mainGoal[3].goal) * 100
+                                )}
+                                style={{ width: "50px" }}
+                            />
                         </Stack>
                     </Group>
                 </Collapse>
@@ -156,15 +121,33 @@ function MealLog() {
     };
 
     return (
-        <Container style={{ backgroundColor: "#f6f6f6" }} p="sm">
+        <Container sx={(theme) => ({ backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.fn.lighten(theme.colors.gray[1], 0.1), borderRadius: '10px' })} p="sm">
             <Title order={3} align="center" mb={30}>
                 Recent Meals
             </Title>
-            <Stack style={{ maxHeight: '400px', overflowY: 'auto', padding: '0 10px 0 10px'}}>
-                {meals.map((meal, index) => (
-                    <MealCard key={index} meal={meal} color={randomColor()} />
-                ))}
-            </Stack>
+            {loading ? (
+                <Center>
+                    <Skeleton height={16} radius="md" />
+                    <Skeleton height={120} circle mb="xl" />
+                    <Skeleton height={8} radius="xl" />
+                </Center>
+            ) : (
+                <Stack
+                    style={{
+                        maxHeight: "400px",
+                        overflowY: "auto",
+                        padding: "0 10px 0 10px",
+                    }}
+                >
+                    {mealLog.slice(0).reverse().map((meal, index) => (
+                        <MealCard
+                            key={index}
+                            meal={meal}
+                            color={randomColor()}
+                        />
+                    ))}
+                </Stack>
+            )}
         </Container>
     );
 }

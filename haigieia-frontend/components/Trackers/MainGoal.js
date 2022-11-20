@@ -64,7 +64,7 @@ function MainGoal() {
     };
 
     return (
-        <Container style={{ backgroundColor: "#f6f6f6" }} p="sm">
+        <Container sx={(theme) => ({ backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.fn.lighten(theme.colors.gray[1], 0.1), borderRadius: '10px' })} p="sm" >
             {loading ? (
                 <Center>
                     <Skeleton height={10} radius="md" mb="lg" />
@@ -146,7 +146,7 @@ function MainGoal() {
                     </Center>
                     <Group
                         position="apart"
-                        style={{ backgroundColor: "#fafafa" }}
+                        sx = {(theme) => ({ backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.fn.lighten(theme.colors.gray[0], 0.25), borderRadius: '10px', })}
                         p="md"
                         noWrap
                     >

@@ -47,6 +47,7 @@ const init_data = {
       "value": 0
     }
   ],
+  meal_log: []
 }
 
 const formatAuthUser = (user) => ({
