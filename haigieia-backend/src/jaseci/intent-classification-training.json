@@ -11,7 +11,14 @@
         "please do",
         "yeah correct",
         "sounds good",
-        "looks good"
+        "looks good",
+        "yup",
+        "yessir",
+        "yes maam",
+        "yes sir",
+        "yeah",
+        "yes",
+        "correct"
     ],
     "no": [
         "i don't think so",
@@ -32,12 +39,12 @@
         "not quite",
         "restart",
         "start over",
-        "can I just start this again"
+        "can I just start this again",
+        "nothing"
     ],
     "cancel": [
         "cancel",
         "call off",
-        "postpone",
         "scrap that",
         "let's drop the process",
         "scrub that",
@@ -45,23 +52,22 @@
         "revoke everything",
         "write that off",
         "repeal",
-        "forget about it"
+        "forget about it",
+        "cancel my meal"
     ],
-    "record food": [
+    "record": [
         "Today for lunch I ate a chicken salad",
         "I had two chicken thighs",
         "I ate 3 chocolate chip cookies today",
-        "For lunch I had a subway sandwich and chips",
+        "For lunch I had a subway sandwich, chips, and a can of Coke",
         "After my dinner I ate 250 calories of ice cream",
         "The spinach salad I ate for lunch was delicious",
         "My breakfast consisted of eggs, bacon, and a smoothie",
         "For dessert I had a slice of leftover birthday cake",
-        "I ate a meal for dinner that had 30 grams of protein and 50 grams of carbohydrates",
+        "Haigieia, I ate a meal for dinner that had 30 grams of protein and 50 grams of carbohydrates",
         "I gobbled down 3 packs of gushers earlier",
         "Could you please add my meal from lunch to my day, I had four cookies and a sandwich",
-        "Hi Haigieia I want to add another meal with lasagna"
-    ],
-    "record drink": [
+        "Hi Haigieia I want to add another meal with lasagna, broccoli, and root beer",
         "I had a glass of water just now",
         "Add a glass of water",
         "I drank five glasses of water today",
@@ -70,37 +76,71 @@
         "I had four glasses of water tonight",
         "300 calories of lemonade were consumed today",
         "I drank a bottle of water",
-        "I drank a cup of water",
+        "Haigieia, I drank a cup of water and ate a burrito for lunch",
         "I quenched my thirst just now",
         "I downed a whole bottle of water",
         "I took a few gulps of water",
         "I chugged a pint of water",
         "I guzzled my bottle of beer",
-        "Hey Haigieia can you add three glasses of water to my day"
+        "Hey Haigieia can you add three glasses of water to my day",
+        "Five eggs, one piece of toast, and a glass of orange juice",
+        "Two apples, three oranges",
+        "Twenty-two fries and a hamburger",
+        "Twelve bars and two yogurts"
     ],
-    "record food or quantity_f": [
+    "record single": [
         "A chicken sandwich from Chick-fil-a",
         "I had ten pieces",
-        "I ate a twelve ounce bowl of mac and cheese",
+        "I ate mac and cheese",
+        "I ate a twelve ounce bowl",
         "Half of it",
         "The whole thing",
         "About three-quarters of it",
         "Slices of pepperoni pizza",
-        "A bag of Lays chips",
+        "A bag",
+        "Lays chips",
         "Twenty five",
         "Fourteen ounces",
-        "A big slice"
-    ],
-    "record drink or quantity_d": [
+        "A big slice",
+        "One",
+        "Four",
+        "It was just water",
         "I had eight fluid ounces",
         "It was Diet Coke",
         "I had six twelve-ounce cans",
-        "It was just water",
         "Three glasses",
         "Sixteen fluid ounces",
         "Coors lite",
-        "Sprite",
-        "A glass of red wine",
-        "Diet Dr. Pepper"
-    ]
+        "Just Sprite",
+        "Red wine",
+        "Diet Dr. Pepper",
+        "A can",
+        "A glass",
+        "A burger",
+        "a whole gallon",
+        "Just fries"
+    ],
+    "change meal": [
+        "I'd like to make a change",
+        "Change my meal",
+        "I did not have the quesadilla",
+        "No that does not sound right",
+        "You have my meal wrong",
+        "Can you edit my meal for the day?",
+        "Haigieia I want to remove an item from the meal",
+        "I want to add to my meal",
+        "Add a drink to my meal"
+    ],
+    "remove": [
+        "Take away a glass of water",
+        "Remove my chicken sandwich",
+        "Take off the extra pint of ice cream",
+        "No caesar salad",
+        "Cut the burrito from my meal",
+        "Remove the Diet Coke",
+        "Take off a pint of beer",
+        "Get rid of the slice of cake",
+        "Eliminate the chips and a glass of water",
+        "Remove a Sprite and a sandwich"
+    ] 
 }
