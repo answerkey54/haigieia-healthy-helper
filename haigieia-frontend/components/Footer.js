@@ -1,5 +1,5 @@
 import React from "react";
-import { createStyles, Title } from "@mantine/core";
+import { createStyles, Title, Image } from "@mantine/core";
 import { Footer, Group, Text } from "@mantine/core";
 import Link from "next/link";
 
@@ -31,6 +31,8 @@ function FooterComponent() {
     return (
         <div className={classes.root}>
             <Group position="apart" spacing="xl">
+            <Group>
+            <Image src={"/logo192.png"} width={50} height={50}/>
                 <Link href="/">
                     <Title order={1}>
                         <span
@@ -45,6 +47,7 @@ function FooterComponent() {
                         </span>
                     </Title>
                 </Link>
+            </Group>
                 <Text size="sm">
                     <span style={{ fontWeight: "bolder" }}>© 2022</span>
                 </Text>

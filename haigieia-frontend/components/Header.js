@@ -7,6 +7,8 @@ import {
     MediaQuery,
     Burger,
     useMantineTheme,
+    Image,
+    Group
 } from "@mantine/core";
 import "../styles/Header.module.css";
 import Link from "next/link";
@@ -35,6 +37,7 @@ function HeaderComponent({ opened, setOpened }) {
 
     return (
         <Header height={60} p={4}>
+
             <Center position="apart" spacing="xl">
                 <MediaQuery largerThan="xs" styles={{ display: "none" }}>
                     <Burger
@@ -45,20 +48,23 @@ function HeaderComponent({ opened, setOpened }) {
                         mr="xl"
                     />
                 </MediaQuery>
-                <Link href="/">
-                    <Title order={1}>
-                        <span
-                            style={{
-                                color: "lightSteelBlue",
-                                fontWeight: "bolder",
-                                fontFamily: "Orbitron, sans-serif",
-                            }}
-                        >
-                            hA<span style={{ fontSize: "2.25rem" }}>i</span>
-                            gieia
-                        </span>
-                    </Title>
-                </Link>
+                <Group>
+                    <Image src={"/logo192.png"} width={50} height={50}/>
+                    <Link href="/">
+                        <Title order={1}>
+                            <span
+                                style={{
+                                    color: "lightSteelBlue",
+                                    fontWeight: "bolder",
+                                    fontFamily: "Orbitron, sans-serif",
+                                }}
+                            >
+                                hA<span style={{ fontSize: "2.25rem" }}>i</span>
+                                gieia
+                            </span>
+                        </Title>
+                    </Link>
+                </Group>
             </Center>
         </Header>
     );
