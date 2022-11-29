@@ -216,14 +216,19 @@ node remove:dialogue_state {
     }
     can process {
         for ent in visitor.wlk_ctx["entities"]["remove"]:
+            pair_found = false;
             for pair in visitor.wlk_ctx["entities"]["pairs"]:
-                if (pair[1][1] == ent[1]): visitor.wlk_ctx["entities"]["pairs"].l::remove(pair);
+                if (pair[1][1] == ent[1]) {
+                    visitor.wlk_ctx["entities"]["pairs"].l::remove(pair);
+                    pair_found = true;
+                }
+            if (pair_found): visitor.wlk_ctx["entities"]["remove"].l::remove(ent);
         if (visitor.wlk_ctx["prev_state"]): visitor.wlk_ctx["respond"] = true;
         visitor.wlk_ctx["next_state"] = (-[intent_transition(intent==visitor.wlk_ctx["intent"])]->)[0];
         visitor.wlk_ctx["prev_state"] = here;
     }
     can nlg {
-       visitor.response = "Removed! Anything you'd like to add to the meal?";
+       visitor.response = "Removed! Anything else you'd like to add to or remove from the meal?";
     }
 }
 
@@ -236,7 +241,7 @@ edge intent_transition {
     has intent;
 }
 
-graph haigiea_graph {
+graph haigieia_graph {
     has anchor record;
     spawn {
         record = spawn node::record;
@@ -253,6 +258,7 @@ graph haigiea_graph {
         record -[intent_transition(intent="record")]-> record;
         // ask if they have anything else to record
         follow_up -[intent_transition(intent="record")]-> record;
+        follow_up -[intent_transition(intent="yes")]-> record;
         follow_up -[intent_transition(intent="no")]-> confirmation;
         // repeat meal and ask if it is correct
         confirmation -[intent_transition(intent="yes")]-> meal_confirmed;
@@ -265,6 +271,7 @@ graph haigiea_graph {
         change_meal -[intent_transition(intent="remove")]-> remove;
         // remove does as it says, then ask if they want to record anything more
         remove -[intent_transition(intent="record")]-> record;
+        remove -[intent_transition(intent="remove")]-> remove;
         remove -[intent_transition(intent="no")]-> confirmation;
     }
 }
@@ -313,7 +320,7 @@ walker talk {
 
 walker init {
     root {
-        spawn here --> graph::haigiea_graph;
+        spawn here --> graph::haigieia_graph;
         spawn here walker::talk;
     }
 }
