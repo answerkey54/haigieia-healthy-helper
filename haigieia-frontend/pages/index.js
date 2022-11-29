@@ -14,6 +14,8 @@ import {
     TextInput,
     Title,
     useMantineTheme,
+    Image,
+    Header,
 } from "@mantine/core";
 import Dictaphone from "../components/Dictaphone";
 import { useScrollIntoView } from "@mantine/hooks";
@@ -56,6 +58,7 @@ export default function Home() {
             { text: text, type: "user" },
         ]);
         scrollIntoView();
+        form.setFieldValue("text", "");
         // if text contains 'water' call updateWaterGoal from useDatabase
         var response = generateResponse(text);
         // wait 2 seconds to simulate a delay in the response
@@ -153,6 +156,22 @@ export default function Home() {
                     ) : (
                         <Stack justify="flex-end" style={{ height: "100%" }}>
                             <Paper p="sm">
+                                <Text
+                                    variant="gradient"
+                                    gradient={{
+                                        from: "indigo.8",
+                                        to: "cyan",
+                                        deg: 135,
+                                    }}
+                                    sx={{
+                                        fontFamily: "Orbitron, sans-serif",
+                                    }}
+                                    ta="center"
+                                    fz="xl"
+                                    fw={700}
+                                >
+                                    Talk to Haigeia:
+                                </Text>
                                 <Container
                                     size="fluid"
                                     p="sm"
@@ -201,11 +220,16 @@ export default function Home() {
                                     <></>
                                 )}
                             </Paper>
-                            <form  onSubmit={form.onSubmit((values) => dialogFlow(values.text) )} >
+                            <form
+                                onSubmit={form.onSubmit((values) =>
+                                    dialogFlow(values.text)
+                                )}
+                            >
                                 <TextInput
                                     variant="filled"
                                     radius="md"
                                     size="lg"
+                                    placeholder="Start typing or use voice"
                                     mb={50}
                                     rightSection={
                                         <Dictaphone
@@ -215,10 +239,8 @@ export default function Home() {
                                             }
                                         />
                                     }
-                                    {...form.getInputProps('text')}
-                                    
+                                    {...form.getInputProps("text")}
                                 />
-                              
                             </form>
                         </Stack>
                     )}
