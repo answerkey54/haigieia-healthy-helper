@@ -238,11 +238,11 @@ export function useFirebaseAuth() {
                                     result.user.metadata.lastSignInTime,
                             },
                             enrolled: true,
-                            role: data.title,
+                            role: data.role,
                         });
                         set(
                             ref(database, `data/${result.user.uid}/`),
-                            init_data
+                            data.init_data
                         );
                     }
                     setEnrolled(true);
