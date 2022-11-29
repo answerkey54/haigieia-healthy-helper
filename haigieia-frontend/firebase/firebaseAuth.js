@@ -8,7 +8,7 @@ import {
     signOut,
     getAdditionalUserInfo,
 } from "firebase/auth";
-import { getDatabase, ref, child, get, set } from "firebase/database";
+import { getDatabase, ref, child, get, set, connectDatabaseEmulator } from "firebase/database";
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "./config";
 
@@ -220,7 +220,6 @@ export function useFirebaseAuth() {
 
     const enrollGoogle = async (data) => {
         // if not signed in, sign in first
-        debugger;
         if (!authUser) {
             signInWithPopup(auth, provider)
                 .then((result) => {
@@ -247,6 +246,7 @@ export function useFirebaseAuth() {
                         );
                     }
                     setEnrolled(true);
+                    console.log("enrolled new user - ALL CLEAR");
                     return {
                         error: false,
                         route: "/dashboard",
