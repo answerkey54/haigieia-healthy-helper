@@ -29,6 +29,7 @@ import {
     IconMoonStars,
 } from "@tabler/icons";
 import { NextLink } from "@mantine/next";
+import { useRouter } from "next/router";
 
 const useStyles = createStyles((theme) => ({
     link: {
@@ -65,7 +66,7 @@ const useStyles = createStyles((theme) => ({
     },
 }));
 
-function NavbarLink({ icon, label, active, onClick, href }) {
+function NavbarLink({ icon, label, active, href }) {
     const { classes, cx } = useStyles();
 
     return (
@@ -73,7 +74,6 @@ function NavbarLink({ icon, label, active, onClick, href }) {
             <UnstyledButton
                 component={NextLink}
                 href={href}
-                onClick={onClick}
                 className={cx(classes.link, { [classes.active]: active })}
             >
                 <Icon icon={icon} />
@@ -85,7 +85,6 @@ function NavbarLink({ icon, label, active, onClick, href }) {
 const data = [
     { icon: IconHome2, label: "Home", href: "/" },
     { icon: IconGauge, label: "Dashboard", href: "/dashboard" },
-    { icon: IconSettings, label: "Settings", href: "/settings" },
 ];
 
 const Icon = (props) => {
@@ -95,18 +94,18 @@ const Icon = (props) => {
 };
 
 export function NavbarMinimal(props) {
-    const [active, setActive] = useState(0);
     const [opened, setOpened] = useState(false);
     const { authUser, loading, signOutUser } = useAuth();
     const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+
+    const router = useRouter();
 
     const links = data.map((link, index) => (
         <NavbarLink
             {...link}
             href={link.href}
             key={link.label}
-            active={index === active}
-            onClick={() => setActive(index)}
+            active={router.pathname === link.href}
         />
     ));
 

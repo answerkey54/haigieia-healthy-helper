@@ -29,6 +29,7 @@ export const ApplicationContainer = ({children}) => {
                 width: "100vw",
                 position: "relative",
                 zIndex: 1,
+                boxShadow: "0px 10px 15px 0px rgba(0,0,0,0.1)",
             }
         })}
         fixed

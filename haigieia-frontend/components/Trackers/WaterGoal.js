@@ -8,6 +8,7 @@ import {
     SimpleGrid,
     Skeleton,
     Space,
+    Stack,
     Text,
     ThemeIcon,
     Title,
@@ -25,11 +26,15 @@ const useStyles = createStyles((theme, _params, getRef) => ({
         marginRight: "auto",
         minWidth: "250px",
         padding: "10px",
-        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.fn.lighten(theme.colors.gray[1], 0.1),
+        backgroundColor:
+            theme.colorScheme === "dark"
+                ? theme.colors.dark[6]
+                : theme.fn.lighten(theme.colors.gray[1], 0.1),
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         borderRadius: "10px",
+        height: "100%",
 
         [theme.fn.smallerThan("xs")]: {
             minWidth: "0px",
@@ -54,7 +59,10 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     cover: {
         position: "absolute",
         bottom: 0,
-        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.fn.lighten(theme.colors.gray[1], 0.1),
+        backgroundColor:
+            theme.colorScheme === "dark"
+                ? theme.colors.dark[6]
+                : theme.fn.lighten(theme.colors.gray[1], 0.1),
         width: "160px",
         height: "150px",
         clipPath:
@@ -199,7 +207,15 @@ function WaterGoal() {
 
     return (
         <Container
-        sx={(theme) => ({ backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.fn.lighten(theme.colors.gray[1], 0.1), borderRadius: '10px', minWidth: "200px" })}
+            sx={(theme) => ({
+                backgroundColor:
+                    theme.colorScheme === "dark"
+                        ? theme.colors.dark[6]
+                        : theme.fn.lighten(theme.colors.gray[1], 0.1),
+                borderRadius: "10px",
+                minWidth: "200px",
+                height: "100%",
+            })}
             p="sm"
         >
             {loading ? (
@@ -213,50 +229,64 @@ function WaterGoal() {
                     <Title order={3} align="center">
                         Water Goal
                     </Title>
-                    <Center>
-                        {view ? (
-                            <div id="container" className={classes.container}>
-                                <div id="glass" className={classes.glass}>
-                                    <div
-                                        id="water"
-                                        className={classes.water}
-                                    ></div>
-                                    <div
-                                        id="cover"
-                                        className={classes.cover}
-                                    ></div>
-                                    <Title
-                                        order={2}
-                                        className={classes.countup}
-                                    >
-                                        {parseInt((waterGoal.value/waterGoal.goal)*100)}%
-                                    </Title>
+                    <Stack>
+                        <Center style={{ minHeight: "180px" }} >
+                            {view ? (
+                                <div
+                                    id="container"
+                                    className={classes.container}
+                                >
+                                    <div id="glass" className={classes.glass}>
+                                        <div
+                                            id="water"
+                                            className={classes.water}
+                                        ></div>
+                                        <div
+                                            id="cover"
+                                            className={classes.cover}
+                                        ></div>
+                                        <Title
+                                            order={2}
+                                            className={classes.countup}
+                                        >
+                                            {parseInt(
+                                                (waterGoal.value /
+                                                    waterGoal.goal) *
+                                                    100
+                                            )}
+                                            %
+                                        </Title>
+                                    </div>
                                 </div>
-                            </div>
-                        ) : (
-                            <BottleView
-                                water={waterGoal.value}
-                                goal={waterGoal.goal}
-                            />
-                        )}
-                    </Center>
-                    <ActionIcon onClick={() => toggleView()}>
-                        {view ? <IconBottle /> : <IconGlassFull />}
-                    </ActionIcon>
-                    <Center mb={10}>
-                        <Text
-                            weight={400}
-                            style={{ fontSize: "30px" }}
-                            color={water_goal.color}
-                        >
-                            {waterGoal.value}
-                        </Text>
-                        <Space w={4} />
-                        <Text weight={400} size="xs" color={water_goal.color}>
-                            {water_goal.unit}
-                            <Space h={0} />/{waterGoal.goal}
-                        </Text>
-                    </Center>
+                            ) : (
+                                <BottleView
+                                    water={waterGoal.value}
+                                    goal={waterGoal.goal}
+                                />
+                            )}
+                        </Center>
+                        <ActionIcon onClick={() => toggleView()}>
+                            {view ? <IconBottle /> : <IconGlassFull />}
+                        </ActionIcon>
+                        <Center mb={10}>
+                            <Text
+                                weight={400}
+                                style={{ fontSize: "30px" }}
+                                color={water_goal.color}
+                            >
+                                {waterGoal.value}
+                            </Text>
+                            <Space w={4} />
+                            <Text
+                                weight={400}
+                                size="xs"
+                                color={water_goal.color}
+                            >
+                                {water_goal.unit}
+                                <Space h={0} />/{waterGoal.goal}
+                            </Text>
+                        </Center>
+                    </Stack>
                 </>
             )}
         </Container>

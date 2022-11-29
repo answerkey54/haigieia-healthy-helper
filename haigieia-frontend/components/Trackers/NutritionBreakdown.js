@@ -2,6 +2,7 @@ import {
     Center,
     Container,
     RingProgress,
+    Stack,
     Title,
     useMantineTheme,
 } from "@mantine/core";
@@ -45,37 +46,54 @@ function NutritionBreakdown() {
     const reset = () => setHovered(-1);
 
     return (
-        <Container sx={(theme) => ({ backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.fn.lighten(theme.colors.gray[1], 0.1), borderRadius: '10px' })} p="sm">
+        <Container
+            sx={(theme) => ({
+                backgroundColor:
+                    theme.colorScheme === "dark"
+                        ? theme.colors.dark[6]
+                        : theme.fn.lighten(theme.colors.gray[1], 0.1),
+                borderRadius: "10px",
+                minHeight: "100%",
+            })}
+            p="sm"
+        >
             <Title order={3} align="center">
                 Nutrition Breakdown
             </Title>
-            <Center>
-                <RingProgress
-                    onMouseLeave={() => setHovered(-1)}
-                    size={180}
-                    thickness={27}
-                    sections={goals.map((goal, index) => ({
-                        value: goal.value,
-                        color: goal.color,
-                        tooltip: `${goal.title}: ${goal.value}%`,
-                        onMouseEnter: () => setHovered(index),
-                        onMouseLeave: reset,
-                    }))}
-                    label={
-                        hovered === -1
-                            ? ""
-                            : <Center><EmojiIcon size="xl" emoji={goals[hovered].emoji} color={goals[hovered].color} /></Center>
-                    }
-                />
-            </Center>
-            <Title order={3} align="center" weight={500}>
-                {hovered === -1 ? (
-                    "hover chart for info"
-                ) : (
-
-                        `${goals[hovered].value}/${goals[hovered].goal}%`
-                )}
-            </Title>
+            <Stack justify="space-around" >
+                <Center>
+                    <RingProgress
+                        onMouseLeave={() => setHovered(-1)}
+                        size={180}
+                        thickness={27}
+                        sections={goals.map((goal, index) => ({
+                            value: goal.value,
+                            color: goal.color,
+                            tooltip: `${goal.title}: ${goal.value}%`,
+                            onMouseEnter: () => setHovered(index),
+                            onMouseLeave: reset,
+                        }))}
+                        label={
+                            hovered === -1 ? (
+                                ""
+                            ) : (
+                                <Center>
+                                    <EmojiIcon
+                                        size="xl"
+                                        emoji={goals[hovered].emoji}
+                                        color={goals[hovered].color}
+                                    />
+                                </Center>
+                            )
+                        }
+                    />
+                </Center>
+                <Title order={3} align="center" weight={500}>
+                    {hovered === -1
+                        ? "hover chart for info"
+                        : `${goals[hovered].value}/${goals[hovered].goal}%`}
+                </Title>
+            </Stack>
         </Container>
     );
 }

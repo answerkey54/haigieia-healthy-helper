@@ -2,10 +2,10 @@ import React, {useEffect} from "react";
 import SpeechRecognition, {
     useSpeechRecognition,
 } from "react-speech-recognition";
-import { Text, ActionIcon, MantineProvider, Button, Center } from "@mantine/core";
+import { Text, ActionIcon, MantineProvider, Center } from "@mantine/core";
 import { IconMicrophone } from "@tabler/icons";
 
-const Dictaphone = ({text, setText, setOpen, open, setActiveListening}) => {
+const Dictaphone = ({text, setText, setActiveListening}) => {
 
     // FIXME - This is where you would add the logic for an alternative speech recognition service, make sure to setText() with the result.
     const {
@@ -17,9 +17,6 @@ const Dictaphone = ({text, setText, setOpen, open, setActiveListening}) => {
 
     useEffect(() => {
         setText(transcript);
-        if(!open && listening){
-            setOpen(true)
-        }
         setActiveListening(listening)
       }, [listening, transcript])
 
@@ -32,13 +29,13 @@ const Dictaphone = ({text, setText, setOpen, open, setActiveListening}) => {
             <Center>
                 <ActionIcon
                     color="blue"
-                    size="xl"
-                    radius="lg"
+                    size={50}
+                    radius="md"
                     variant="filled"
                     onClick={SpeechRecognition.startListening}
                     loading={listening}
                 >
-                    <IconMicrophone size={16} />
+                    <IconMicrophone size={24} />
                 </ActionIcon>
                 
             </Center>
