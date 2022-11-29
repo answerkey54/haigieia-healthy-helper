@@ -20,7 +20,7 @@ const SelectItem = forwardRef(
   ({ image, label, description, ...others }, ref) => (
     <div ref={ref} {...others}>
       <Group noWrap>
-        <Avatar src={image} />
+        <Avatar src={image}  />
         <div>
           <Text size="sm">{label}</Text>
           <Text size="xs" color="dimmed">

@@ -3,19 +3,14 @@ import {
     Center,
     Container,
     createStyles,
-    Group,
-    RingProgress,
     SimpleGrid,
     Skeleton,
     Space,
     Stack,
     Text,
-    ThemeIcon,
     Title,
-    UnstyledButton,
     useMantineTheme,
 } from "@mantine/core";
-import CountUp from "react-countup";
 import React, { useEffect, useRef, useState } from "react";
 import { IconBottle, IconGlassFull } from "@tabler/icons";
 import { useDatabase } from "../../context/userDataContext";
@@ -172,13 +167,11 @@ function WaterGoal() {
     const { classes } = useStyles();
     const [view, setView] = useState(true);
 
-    const water_goal = {
+    const WATER_CONST = {
         title: "Water",
         unit: "glasses",
         color: theme.colors.blue[4],
     };
-
-    const counter = useRef(null);
 
     useEffect(() => {
         if (view && !loading) {
@@ -189,9 +182,6 @@ function WaterGoal() {
                 const waterHeight = (waterGoal.value / waterGoal.goal) * 150;
                 water.style.transition = "height 3s ease-out";
                 water.style.height = `${waterHeight}px`;
-                const percent = parseInt(
-                    (waterGoal.value / waterGoal.goal) * 100
-                );
             }, 100);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -272,7 +262,7 @@ function WaterGoal() {
                             <Text
                                 weight={400}
                                 style={{ fontSize: "30px" }}
-                                color={water_goal.color}
+                                color={WATER_CONST.color}
                             >
                                 {waterGoal.value}
                             </Text>
@@ -280,9 +270,9 @@ function WaterGoal() {
                             <Text
                                 weight={400}
                                 size="xs"
-                                color={water_goal.color}
+                                color={WATER_CONST.color}
                             >
-                                {water_goal.unit}
+                                {WATER_CONST.unit}
                                 <Space h={0} />/{waterGoal.goal}
                             </Text>
                         </Center>

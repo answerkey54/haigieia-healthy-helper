@@ -35,8 +35,8 @@ export function useFirebaseDatabase() {
 
         setWaterGoal(user.water_goal);
         setMainGoal(user.main_goal);
-        setMealLog(user.meal_log);
-        setNutritionLog(user.nutritionLog);
+        setMealLog(user.meal_log || []);
+        setNutritionLog(user.nutrition_log);
         setLoading(false);
     };
 
@@ -55,6 +55,11 @@ export function useFirebaseDatabase() {
         onValue(mealLogRef, (snapshot) => {
             const data = snapshot.val();
             setMealLog(data);
+        });
+        const nutritionLogRef = ref(database, `data/${authUser.uid}/nutrition_log`);
+        onValue(nutritionLogRef, (snapshot) => {
+            const data = snapshot.val();
+            setNutritionLog(data);
         });
     };
 

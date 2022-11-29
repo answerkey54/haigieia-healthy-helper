@@ -20,11 +20,10 @@ import { useDatabase } from "../../context/userDataContext";
 function MainGoal() {
     const [goal, setGoal] = useState(0);
     const theme = useMantineTheme();
-
     const { mainGoal, loading } = useDatabase();
+    console.log(mainGoal,goal);
 
-    //FIXME - This is a placeholder for the main goal. It will be replaced with a firebase call
-    const goals = [
+    const GOAL_CONST = [
         {
             unit: "kcal",
             color: theme.colors.green[4],
@@ -96,13 +95,13 @@ function MainGoal() {
                                     value:
                                         (mainGoal[goal].value / mainGoal[goal].goal) *
                                         100,
-                                    color: goals[goal].color,
+                                    color: GOAL_CONST[goal].color,
                                 },
                             ]}
                             label={
                                 mainGoal[goal].value < mainGoal[goal].goal ? (
                                     <Text
-                                        color={goals[goal].color}
+                                        color={GOAL_CONST[goal].color}
                                         weight={700}
                                         align="center"
                                         size="xl"
@@ -117,7 +116,7 @@ function MainGoal() {
                                 ) : (
                                     <Center>
                                         <ThemeIcon
-                                            color={goals[goal].checkColor}
+                                            color={GOAL_CONST[goal].checkColor}
                                             variant="light"
                                             radius="xl"
                                             size="xl"
@@ -133,15 +132,15 @@ function MainGoal() {
                         <Text
                             weight={400}
                             style={{ fontSize: "30px" }}
-                            color={goals[goal].color}
+                            color={GOAL_CONST[goal].color}
                         >
                             {mainGoal[goal].value}
                         </Text>
                         <Space w={4} />
-                        <Text weight={400} size="xs" color={goals[goal].color}>
-                            {goals[goal].unit}
+                        <Text weight={400} size="xs" color={GOAL_CONST[goal].color}>
+                            {GOAL_CONST[goal].unit}
                             <Space h={0} />/{mainGoal[goal].goal}
-                            {goals[goal].unit}
+                            {GOAL_CONST[goal].unit}
                         </Text>
                     </Center>
                     <Group
@@ -155,18 +154,18 @@ function MainGoal() {
                                 <Text
                                     weight={700}
                                     size="xs"
-                                    color={goals[cur].color}
+                                    color={GOAL_CONST[cur].color}
                                 >
                                     {mainGoal[cur].title}
                                 </Text>
                                 <Text
                                     weight={300}
                                     style={{ fontSize: "20px" }}
-                                    color={goals[cur].color}
+                                    color={GOAL_CONST[cur].color}
                                 >
                                     {mainGoal[cur].value}
                                     <span style={{ fontSize: "8px" }}>
-                                        {goals[cur].unit}
+                                        {GOAL_CONST[cur].unit}
                                     </span>
                                 </Text>
                             </Stack>

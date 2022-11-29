@@ -1,5 +1,6 @@
 import {
     Avatar,
+    Button,
     Center,
     Collapse,
     ColorPicker,
@@ -13,6 +14,7 @@ import {
     Title,
 } from "@mantine/core";
 import { useElementSize, useHover } from "@mantine/hooks";
+import { NextLink } from "@mantine/next";
 import React, { useRef } from "react";
 import { useDatabase } from "../../context/userDataContext";
 
@@ -139,13 +141,27 @@ function MealLog() {
                         padding: "0 10px 0 10px",
                     }}
                 >
-                    {mealLog.slice(0).reverse().map((meal, index) => (
+                    {mealLog.length > 0 ? (
+                    mealLog.slice(0).reverse().map((meal, index) => (
                         <MealCard
                             key={index}
                             meal={meal}
                             color={randomColor()}
                         />
-                    ))}
+                    )))
+                     : (
+                        <Stack>
+                        <Text align="center" color="gray">
+                            No meals logged yet.
+                        </Text> 
+                        <Text align="center" color="gray">
+                            Add a meal to get started
+                        </Text>
+                        <Button component={NextLink} href="/">
+                            Add Meal
+                        </Button>
+                        </Stack>
+                    )}
                 </Stack>
             )}
         </Container>

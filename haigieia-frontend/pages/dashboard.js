@@ -7,8 +7,6 @@ import {
     Loader,
     Title,
     Text,
-    Paper,
-    useMantineTheme,
     Grid,
     Button,
 } from "@mantine/core";
@@ -16,16 +14,12 @@ import DashboardCard from "../components/DashboardCard";
 import MainGoal from "../components/Trackers/MainGoal";
 import WaterGoal from "../components/Trackers/WaterGoal";
 import NutritionBreakdown from "../components/Trackers/NutritionBreakdown";
-import EmojiIcon from "../shared/EmojiIcon";
 import MealLog from "../components/Trackers/MealLog";
-import { useDatabase } from "../context/userDataContext";
 import Link from "next/link";
 
 function Dashboard() {
     const { authUser, loading, enrolled } = useAuth();
-    const { updateWaterLevel, updateMealLog, updateMainGoal } = useDatabase();
     const router = useRouter();
-    const [conversation, setConversation] = useState([]);
 
     //console.log(authUser, loading, enrolled);
 
