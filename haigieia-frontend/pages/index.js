@@ -5,26 +5,21 @@ import {
     Button,
     Center,
     Container,
-    Divider,
-    Input,
     Loader,
     Paper,
     Stack,
     Text,
     TextInput,
-    Title,
     useMantineTheme,
-    Image,
-    Header,
 } from "@mantine/core";
 import Dictaphone from "../components/Dictaphone";
 import { useScrollIntoView } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
+import { generateResponse } from "../components/responseGeneration";
 
 export default function Home() {
     const { authUser, loading } = useAuth();
     const theme = useMantineTheme();
-
     const [text, setText] = useState("");
     const [activeListening, setActiveListening] = useState(false);
     const [conversation, setConversation] = useState([]);
@@ -70,31 +65,6 @@ export default function Home() {
             scrollIntoView();
         }, 1000);
         console.log(conversation);
-    };
-
-    const generateResponse = (text) => {
-        var response = "Sorry, I didn't understand that.";
-        if (text.includes("water")) {
-            //updateWaterLevel(1);
-            response = "Okay, I'm adding a glass of water to your log.";
-        }
-        if (text.includes("quesadilla")) {
-            const meal = {
-                item: "Quesadilla",
-                calories: 500,
-                protein: 50,
-                carbs: 30,
-                fat: 25,
-                weight: 250,
-            };
-            updateMealLog(meal);
-            updateMainGoal("calories", 500);
-            updateMainGoal("protein", 50);
-            updateMainGoal("carbs", 30);
-            updateMainGoal("fat", 25);
-            response = "Okay, I'm adding a quesadilla to your meal log.";
-        }
-        return response;
     };
 
     const Conversation = conversation.map((item, index) => (

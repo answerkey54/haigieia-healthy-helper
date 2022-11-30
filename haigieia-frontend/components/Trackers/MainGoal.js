@@ -145,7 +145,7 @@ function MainGoal() {
                     </Center>
                     <Group
                         position="apart"
-                        sx = {(theme) => ({ backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.fn.lighten(theme.colors.gray[0], 0.25), borderRadius: '10px', })}
+                        sx = {(theme) => ({ backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.fn.lighten(theme.colors.gray[0], 0.1), borderRadius: '10px', })}
                         p="md"
                         noWrap
                     >
