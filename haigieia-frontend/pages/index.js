@@ -19,7 +19,7 @@ import { useForm } from "@mantine/form";
 
 export default function Home() {
     const { authUser, loading } = useAuth();
-    const { updateWaterLevel, updateMainGoal, updateMealLog } = useDatabase();
+    const { updateWaterLevel, addMeal } = useDatabase();
     const theme = useMantineTheme();
     const [text, setText] = useState("");
     const [activeListening, setActiveListening] = useState(false);
@@ -90,13 +90,13 @@ export default function Home() {
         } else if (!dialog) {
             return "I didn't understand that.";
         }
-
         //Run Dialog
         const response = mockDemo(turn);
         setTurn(turn + 1);
         if (response.includes("done")) {
             setDialog(null);
             setTurn(1);
+
         }
         return response;
     }
