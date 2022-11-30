@@ -58,13 +58,14 @@ export default function Home() {
         // if text contains 'water' call updateWaterGoal from useDatabase
         var response = generateResponse(text);
         // wait 2 seconds to simulate a delay in the response
+        const waitTime = Math.floor(Math.random() * (3000 - 500 + 1) + 500);
         setTimeout(() => {
             setConversation((conversation) => [
                 ...conversation,
                 { text: response, type: "bot" },
             ]);
             scrollIntoView();
-        }, 1000);
+        }, waitTime);
 
         console.log(conversation);
     };
