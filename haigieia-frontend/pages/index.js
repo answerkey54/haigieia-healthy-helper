@@ -70,9 +70,41 @@ export default function Home() {
     };
 
     //Mocking demo functions + state
-
     const [dialog, setDialog] = useState(null);
     const [turn, setTurn] = useState(1);
+
+    const pizza_slice = {
+        item: "Pizza Slice",
+        calories: 300,
+        protein: 10,
+        fat: 10,
+        carbs: 10,
+        weight: 100,
+    };
+    const cheeseburger = {
+        item: "Cheeseburger",
+        calories: 500,
+        protein: 20,
+        fat: 20,
+        carbs: 20,
+        weight: 200,
+    };
+    const salad = {
+        item: "Salad",
+        calories: 100,
+        protein: 5,
+        fat: 5,
+        carbs: 5,
+        weight: 50,
+    };
+    const hamburger = {
+        item: "Hamburger",
+        calories: 400,
+        protein: 15,
+        fat: 15,
+        carbs: 15,
+        weight: 150,
+    };
 
     function generateResponse(text) {
         if (text.includes("pizza")) {
@@ -87,6 +119,9 @@ export default function Home() {
             setDialog("salad");
             setTurn(2);
             return "Adding 1 caesar salad. Do you want to add more items?";
+        } else if (text.includes("glass") || text.includes("water")) {
+            updateWaterLevel(1);
+            return "Adding 1 glass of water to your day.";
         } else if (!dialog) {
             return "I didn't understand that.";
         }
@@ -116,6 +151,8 @@ export default function Home() {
                     case 4: //"no"
                         return "To confirm, you had 1 slice of cheese pizza, 1 glass of water";
                     case 5: //"yes"
+                        addMeal(pizza_slice);
+                        updateWaterLevel(1);
                         return "Ok, I'm done recording your meal";
                 }
             case "cheeseburger":
@@ -137,6 +174,7 @@ export default function Home() {
                     case 8: //"no"
                         return "To confirm, you had 1 hamburger";
                     case 9: //"yes"
+                        addMeal(hamburger);
                         return "Ok, I'm done recording your meal";
                 }
             case "salad":
