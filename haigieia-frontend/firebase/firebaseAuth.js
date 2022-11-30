@@ -8,7 +8,14 @@ import {
     signOut,
     getAdditionalUserInfo,
 } from "firebase/auth";
-import { getDatabase, ref, child, get, set, connectDatabaseEmulator } from "firebase/database";
+import {
+    getDatabase,
+    ref,
+    child,
+    get,
+    set,
+    connectDatabaseEmulator,
+} from "firebase/database";
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "./config";
 
@@ -220,54 +227,45 @@ export function useFirebaseAuth() {
 
     const enrollGoogle = async (data) => {
         // if not signed in, sign in first
-        if (!authUser) {
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    console.log("creating new user");
-                    // check if user already exists
-                    const additionalUserInfo = getAdditionalUserInfo(result);
-                    console.log('isnewuser?', additionalUserInfo.isNewUser);
-                    if (additionalUserInfo.isNewUser) {
-                        set(ref(database, `users/${result.user.uid}`), {
-                            email: result.user.email,
-                            displayName: result.user.displayName,
-                            photoURL: result.user.photoURL,
-                            metadata: {
-                                creationTime: result.user.metadata.creationTime,
-                                lastSignInTime:
-                                    result.user.metadata.lastSignInTime,
-                            },
-                            enrolled: true,
-                            role: data.role,
-                        });
-                        set(
-                            ref(database, `data/${result.user.uid}/`),
-                            data.init_data
-                        );
-                    }
-                    setEnrolled(true);
-                    console.log("enrolled new user - ALL CLEAR");
-                    return {
-                        error: false,
-                        route: "/dashboard",
-                    };
-                })
-                .catch((error) => {
-                    console.log("here in enroll");
-                    return {
-                        error: true,
-                        code: error.code,
-                        message: error.message,
-                    };
-                });
-        } else {
-            set(ref(database, `users/${authUser.uid}/role`), data.title);
-            setEnrolled(true);
-            return {
-                error: false,
-                route: "/dashboard",
-            };
-        }
+        const result = await signInWithPopup(auth, provider)
+            .then((result) => {
+                console.log("creating new user");
+                // check if user already exists
+                const additionalUserInfo = getAdditionalUserInfo(result);
+                console.log("isnewuser?", additionalUserInfo.isNewUser);
+                if (additionalUserInfo.isNewUser) {
+                    set(ref(database, `users/${result.user.uid}`), {
+                        email: result.user.email,
+                        displayName: result.user.displayName,
+                        photoURL: result.user.photoURL,
+                        metadata: {
+                            creationTime: result.user.metadata.creationTime,
+                            lastSignInTime: result.user.metadata.lastSignInTime,
+                        },
+                        enrolled: true,
+                        role: data.role,
+                    });
+                    set(
+                        ref(database, `data/${result.user.uid}/`),
+                        data.init_data
+                    );
+                }
+                setEnrolled(true);
+                console.log("enrolled new user - ALL CLEAR");
+                return {
+                    error: false,
+                    route: "/dashboard",
+                };
+            })
+            .catch((error) => {
+                console.log("here in enroll");
+                return {
+                    error: true,
+                    code: error.code,
+                    message: error.message,
+                };
+            });
+        return result;
     };
 
     const signOutUser = () =>

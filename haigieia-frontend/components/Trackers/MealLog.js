@@ -22,6 +22,8 @@ function MealLog() {
     const { mealLog, mainGoal, loading, updateMealLog } = useDatabase();
     //FIXME - This is a placeholder for the meal log. It will be replaced with a firebase call
 
+    console.log("mealLog", mealLog);
+
     const MealCard = ({ meal, color }) => {
         const { hovered, ref } = useHover();
 
@@ -141,7 +143,7 @@ function MealLog() {
                         padding: "0 10px 0 10px",
                     }}
                 >
-                    {mealLog.length > 0 ? (
+                    {mealLog?.length > 0 ? (
                     mealLog.slice(0).reverse().map((meal, index) => (
                         <MealCard
                             key={index}
