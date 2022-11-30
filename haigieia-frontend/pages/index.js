@@ -17,7 +17,6 @@ import Dictaphone from "../components/Dictaphone";
 import { useScrollIntoView } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 
-
 export default function Home() {
     const { authUser, loading } = useAuth();
     const { updateWaterLevel, addMeal } = useDatabase();
@@ -66,29 +65,93 @@ export default function Home() {
             ]);
             scrollIntoView();
         }, 1000);
+
         console.log(conversation);
     };
 
+    //Mocking demo functions + state
+
+    const [dialog, setDialog] = useState(null);
+    const [turn, setTurn] = useState(1);
+
     function generateResponse(text) {
-        var response = "Sorry, I didn't understand that.";
-        if (text.includes("water")) {
-            updateWaterLevel(1);
-            response = "Okay, I'm adding a glass of water to your log.";
+        if (text.includes("pizza")) {
+            setDialog("pizza");
+            setTurn(2);
+            return "Adding 1 slice of cheese pizza. Do you want to add more items?";
+        } else if (text.includes("cheeseburger") && turn <= 3) {
+            setDialog("cheeseburger");
+            setTurn(2);
+            return "Adding 1 cheeseburger. Do you want to add more items?";
+        } else if (text.includes("salad")) {
+            setDialog("salad");
+            setTurn(2);
+            return "Adding 1 caesar salad. Do you want to add more items?";
+        } else if (!dialog) {
+            return "I didn't understand that.";
         }
-        if (text.includes("quesadilla")) {
-            const meal = {
-                item: "Quesadilla",
-                calories: 500,
-                protein: 50,
-                carbs: 30,
-                fat: 25,
-                weight: 250,
-            };
-            addMeal(meal);
-            response = "Okay, I'm adding a quesadilla to your meal log.";
+        //Run Dialog
+        const response = mockDemo(turn);
+        setTurn(turn + 1);
+        if (response.includes("done")) {
+            setDialog(null);
+            setTurn(1);
+
         }
         return response;
-}
+    }
+
+    //Run through adding a slice of cheese pizza and a glass of water
+    const mockDemo = (turn) => {
+        console.log(turn);
+        switch (dialog) {
+            case "pizza":
+                switch (turn) {
+                    case 1: //"Add pizza"
+                        return "Adding 1 slice of cheese pizza. Do you want to add more items?";
+                    case 2: //"yes"
+                        return "What else would you like to add?";
+                    case 3: //"A glass of water"
+                        return "Adding 1 glass of water\nDo you want to add more items?";
+                    case 4: //"no"
+                        return "To confirm, you had 1 slice of cheese pizza, 1 glass of water";
+                    case 5: //"yes"
+                        return "Ok, I'm done recording your meal";
+                }
+            case "cheeseburger":
+                switch (turn) {
+                    case 1: //"I ate a cheeseburger"
+                        return "Adding 1 cheeseburger. Do you want to add more items?";
+                    case 2: //"no"
+                        return "To confirm you had 1 cheeseburger";
+                    case 3: //"no, i want to change"
+                        return "Would you like to remove or add items?";
+                    case 4: //"i want to remove an item"
+                        return "What would you like to remove?";
+                    case 5: //"the cheeseburger"
+                        return "Ok, I removed it. Do you want to add more items?";
+                    case 6: //"yes"
+                        return "What else would you like to add?";
+                    case 7: //"a hamburger"
+                        return "Adding 1 hamburger. Do you want to add more items?";
+                    case 8: //"no"
+                        return "To confirm, you had 1 hamburger";
+                    case 9: //"yes"
+                        return "Ok, I'm done recording your meal";
+                }
+            case "salad":
+                switch (turn) {
+                    case 1: //"Add small caesar salad"
+                        return "Adding 1 caesar salad. Do you want to add more items?";
+                    case 2: //"no"
+                        return "To confirm, you had 1 caesar salad";
+                    case 3: //"No, I want to cancel"
+                        return "Ok done, I cancelled your meal";
+                }
+        }
+
+        return "I didn't get that";
+    };
 
     const Conversation = conversation.map((item, index) => (
         <Paper
