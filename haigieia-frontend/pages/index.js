@@ -20,7 +20,7 @@ import { useForm } from "@mantine/form";
 
 export default function Home() {
     const { authUser, loading } = useAuth();
-    const { updateWaterLevel, updateMainGoal, updateMealLog } = useDatabase();
+    const { updateWaterLevel, addMeal } = useDatabase();
     const theme = useMantineTheme();
     const [text, setText] = useState("");
     const [activeListening, setActiveListening] = useState(false);
@@ -84,11 +84,7 @@ export default function Home() {
                 fat: 25,
                 weight: 250,
             };
-            updateMealLog(meal);
-            updateMainGoal("calories", 500);
-            updateMainGoal("protein", 50);
-            updateMainGoal("carbs", 30);
-            updateMainGoal("fat", 25);
+            addMeal(meal);
             response = "Okay, I'm adding a quesadilla to your meal log.";
         }
         return response;

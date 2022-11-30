@@ -56,7 +56,10 @@ export function useFirebaseDatabase() {
             const data = snapshot.val();
             setMealLog(data);
         });
-        const nutritionLogRef = ref(database, `data/${authUser.uid}/nutrition_log`);
+        const nutritionLogRef = ref(
+            database,
+            `data/${authUser.uid}/nutrition_log`
+        );
         onValue(nutritionLogRef, (snapshot) => {
             const data = snapshot.val();
             setNutritionLog(data);
@@ -65,39 +68,95 @@ export function useFirebaseDatabase() {
 
     const setWaterLevel = async (waterGoal) => {
         const userRef = ref(database);
-        await set(child(userRef, `data/${authUser.uid}/water_goal/value`), waterGoal);
+        await set(
+            child(userRef, `data/${authUser.uid}/water_goal/value`),
+            waterGoal
+        );
         setWaterGoal(waterGoal);
     };
 
     const updateWaterLevel = async (waterLevel) => {
         const userRef = ref(database);
-        await set(child(userRef, `data/${authUser.uid}/water_goal/value`), waterGoal.value+waterLevel);
-
+        await set(
+            child(userRef, `data/${authUser.uid}/water_goal/value`),
+            waterGoal.value + waterLevel
+        );
     };
 
-    const updateMainGoal = async (category,newVal) => {
-        const categories = ['calories','protein','carbs','fat'];
-        // get index of category
-        const index = categories.indexOf(category);
-        console.log('Updating main goal for category: ',index);
+    /*
+    meal = {
+        item: "string",
+        calories: "number",
+        protein: "number",
+        carbs: "number",
+        fat: "number",
+        weight: "number",
+    }
+    */
+    const addMeal = async (meal) => {
         const userRef = ref(database);
-        await set(child(userRef, `data/${authUser.uid}/main_goal/${index}/value`), mainGoal[index].value+newVal);
+        await addMealLog(meal);
+        const categories = ["calories", "protein", "carbs", "fat"];
+        categories.forEach(async (category) => {
+            await updateMainGoal(category, meal[category], "add");
+        });
     };
 
-    const updateMealLog = async (meal) => {
+    const removeMeal = async (meal) => {
+        const userRef = ref(database);
+        await removeMealLog(meal);
+        const categories = ["calories", "protein", "carbs", "fat"];
+        categories.forEach(async (category) => {
+            await updateMainGoal(category, meal[category], "subtract");
+        });
+    };
+
+    const addMealLog = async (meal) => {
         const userRef = ref(database);
         const index = mealLog ? mealLog.length : 0;
-        await set(child(userRef, `data/${authUser.uid}/meal_log/${index}`), meal);
+        console.log('adding a meal to meallog', index, meal)
+        await set(
+            child(userRef, `data/${authUser.uid}/meal_log/${index}`),
+            meal
+        );
     };
 
-
-    const updateNutritionLog = async (nutritionLog) => {
+    const removeMealLog = async (meal) => {
         const userRef = ref(database);
+        // remove meal from local mealLog
+        const newMealLog = mealLog.filter((item) => item !== meal);
         await set(
-            child(userRef, `data/${authUser.uid}/nutrition_log`),
-            nutritionLog
+            child(userRef, `data/${authUser.uid}/meal_log/`),
+            newMealLog
         );
-        setNutritionLog(nutritionLog);
+    };
+
+    const updateMainGoal = async (category, newVal, operation) => {
+        const categories = ["calories", "protein", "carbs", "fat"];
+        // get index of category
+        const index = categories.indexOf(category);
+        const userRef = ref(database);
+        console.log('updating main goal', category, newVal, operation)
+        if (operation === "subtract") {
+            await set(
+                child(userRef, `data/${authUser.uid}/main_goal/${index}/value`),
+                mainGoal[index].value - newVal
+            );
+        } else {
+            await set(
+                child(userRef, `data/${authUser.uid}/main_goal/${index}/value`),
+                mainGoal[index].value + newVal
+            );
+        }
+    };
+
+    const updateNutritionLog = async (index, newVal) => {
+        const userRef = ref(database);
+        console.log('updating nutrition log', index, newVal)
+        await set(
+            child(userRef, `data/${authUser.uid}/nutrition_log/${index}/value`),
+            newVal
+        );
     };
 
     return {
@@ -108,8 +167,7 @@ export function useFirebaseDatabase() {
         loading,
         setWaterLevel,
         updateWaterLevel,
-        updateMainGoal,
-        updateMealLog,
-        updateNutritionLog,
+        addMeal,
+        removeMeal,
     };
 }
