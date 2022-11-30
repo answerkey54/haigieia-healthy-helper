@@ -16,6 +16,8 @@ import {
 import Dictaphone from "../components/Dictaphone";
 import { useScrollIntoView } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
+import { SP } from "next/dist/shared/lib/utils";
+import Splash from "../components/Splash";
 
 export default function Home() {
     const { authUser, loading } = useAuth();
@@ -239,14 +241,7 @@ export default function Home() {
             ) : (
                 <Container size="lg" style={{ height: "100%" }}>
                     {!authUser ? (
-                        <Stack align="center">
-                            <Link href="/auth/create" passHref>
-                                <Button component="a">Create Account</Button>
-                            </Link>
-                            <Link href="/auth/login" passHref>
-                                <Button component="a">Login</Button>
-                            </Link>
-                        </Stack>
+                        <Splash />
                     ) : (
                         <Stack justify="flex-end" style={{ height: "100%" }}>
                             <Paper p="sm">
