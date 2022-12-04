@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
 import { useAuth } from "../context/authUserContext";
 import { useDatabase } from "../context/userDataContext";
 import {
@@ -16,7 +15,6 @@ import {
 import Dictaphone from "../components/Dictaphone";
 import { useScrollIntoView } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
-import { SP } from "next/dist/shared/lib/utils";
 import Splash from "../components/Splash";
 
 export default function Home() {
@@ -59,14 +57,16 @@ export default function Home() {
         form.setFieldValue("text", "");
         // if text contains 'water' call updateWaterGoal from useDatabase
         var response = generateResponse(text);
-        // wait 2 seconds to simulate a delay in the response
+        // wait 1-2 seconds to simulate a delay in the response
+        var timeout = Math.floor(Math.random() * 1000) + 1000;
+
         setTimeout(() => {
             setConversation((conversation) => [
                 ...conversation,
                 { text: response, type: "bot" },
             ]);
             scrollIntoView();
-        }, 1000);
+        }, timeout);
 
         console.log(conversation);
     };
@@ -121,9 +121,6 @@ export default function Home() {
             setDialog("salad");
             setTurn(2);
             return "Adding 1 caesar salad. Do you want to add more items?";
-        } else if (text.includes("glass") || text.includes("water")) {
-            updateWaterLevel(1);
-            return "Adding 1 glass of water to your day.";
         } else if (!dialog) {
             return "I didn't understand that.";
         }
