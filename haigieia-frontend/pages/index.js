@@ -78,17 +78,17 @@ export default function Home() {
     const pizza_slice = {
         item: "Pizza Slice",
         calories: 300,
-        protein: 10,
-        fat: 10,
+        protein: 13,
+        fat: 17,
         carbs: 10,
         weight: 100,
     };
     const cheeseburger = {
         item: "Cheeseburger",
         calories: 500,
-        protein: 20,
-        fat: 20,
-        carbs: 20,
+        protein: 18,
+        fat: 23,
+        carbs: 15,
         weight: 200,
     };
     const salad = {
@@ -102,8 +102,8 @@ export default function Home() {
     const hamburger = {
         item: "Hamburger",
         calories: 400,
-        protein: 15,
-        fat: 15,
+        protein: 17,
+        fat: 19,
         carbs: 15,
         weight: 150,
     };
@@ -112,11 +112,11 @@ export default function Home() {
         if (text.includes("pizza")) {
             setDialog("pizza");
             setTurn(2);
-            return "Adding 1 slice of cheese pizza. Do you want to add more items?";
+            return "Thank you would you like to record anything else? Please specify.";
         } else if (text.includes("cheeseburger") && turn <= 3) {
             setDialog("cheeseburger");
             setTurn(2);
-            return "Adding 1 cheeseburger. Do you want to add more items?";
+            return "Thank you would you like to record anything else? Please specify.";
         } else if (text.includes("salad")) {
             setDialog("salad");
             setTurn(2);
@@ -130,7 +130,6 @@ export default function Home() {
         if (response.includes("done")) {
             setDialog(null);
             setTurn(1);
-
         }
         return response;
     }
@@ -142,11 +141,11 @@ export default function Home() {
             case "pizza":
                 switch (turn) {
                     case 1: //"Add pizza"
-                        return "Adding 1 slice of cheese pizza. Do you want to add more items?";
+                        return "Thank you would you like to record anything else? Please specify.";
                     case 2: //"yes"
                         return "What else would you like to add?";
                     case 3: //"A glass of water"
-                        return "Adding 1 glass of water\nDo you want to add more items?";
+                        return "Thank you would you like to record anything else? Please specify.";
                     case 4: //"no"
                         return "To confirm, you had 1 slice of cheese pizza, 1 glass of water";
                     case 5: //"yes"
@@ -157,7 +156,7 @@ export default function Home() {
             case "cheeseburger":
                 switch (turn) {
                     case 1: //"I ate a cheeseburger"
-                        return "Adding 1 cheeseburger. Do you want to add more items?";
+                        return "Thank you would you like to record anything else? Please specify.";
                     case 2: //"no"
                         return "To confirm you had 1 cheeseburger";
                     case 3: //"no, i want to change"
@@ -169,7 +168,7 @@ export default function Home() {
                     case 6: //"yes"
                         return "What else would you like to add?";
                     case 7: //"a hamburger"
-                        return "Adding 1 hamburger. Do you want to add more items?";
+                        return "Thank you would you like to record anything else? Please specify.";
                     case 8: //"no"
                         return "To confirm, you had 1 hamburger";
                     case 9: //"yes"
