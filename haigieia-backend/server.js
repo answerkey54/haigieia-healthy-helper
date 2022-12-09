@@ -8,7 +8,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json({extended: true}))
 app.use(bodyParser.raw({extended: true}))
 
-const port = 3000
+const port = 5000
 const token = "" // make sure to set the key after you instantiate the jaseci server!!
 
 app.get('/', (req, res) => {
