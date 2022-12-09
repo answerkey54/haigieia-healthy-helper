@@ -163,9 +163,38 @@ node confirmation:dialogue_state {
 
 node meal_confirmed:dialogue_state{
     has name = "meal confirmed";
+    has calories;
+    has protein;
+    has fat;
+    has carbohydrates;
     can process {
-        // record all data in database and update UI
-        // response = request.post/get(url, data, headers)
+        for ent in res {
+            ent_val = ent["entity_value"];
+            ent_text = ent["entity_text"];
+            has food_url = "https://api.nal.usda.gov/fdc/v1/foods/search?api_key=JZfAg8Eu8kWcNUca5PVTnvEyFjNJioCYNknNWdw9";
+            has headers = {"Content-Type": "application/json"};
+            has data = {"query": ent_text};
+            nutrition_response = request.get(url ,data , headers);
+            for nutrient in nutrition_response["foods"]["foodNutrients"]{
+            
+                if nutrient["name"] == "calories"{
+                    calories = nutrient["amount"];
+                }
+                if nutrient["name"] == "protein"{
+                    protein = nutrient["amount"];
+                }
+                if nutrient["name"] == "fat"{
+                    fat = nutrient["amount"];
+                }               
+                if nutrient["name"] == "carbohydrates"{
+                    carbohydrates = nutrient["amount"];
+                }
+                request.put("https://haigieia.firebaseapp.com/fireblog/users/bsteinig/userinfo.json", {"calories": calories, "protein": protein, "fat": fat, "carbs": carbohydrates}, {})
+            } 
+
+
+        }
+
         if (visitor.wlk_ctx["prev_state"]): visitor.wlk_ctx["respond"] = true;
     }
     can nlg {
