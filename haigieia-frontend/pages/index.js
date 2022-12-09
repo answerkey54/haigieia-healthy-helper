@@ -78,7 +78,7 @@ export default function Home() {
     const pizza_slice = {
         item: "Pizza Slice",
         calories: 300,
-        protein: 13,
+        protein: 7,
         fat: 17,
         carbs: 10,
         weight: 100,
@@ -88,15 +88,15 @@ export default function Home() {
         calories: 500,
         protein: 18,
         fat: 23,
-        carbs: 15,
+        carbs: 16,
         weight: 200,
     };
     const salad = {
         item: "Salad",
         calories: 100,
-        protein: 5,
-        fat: 5,
-        carbs: 5,
+        protein: 3,
+        fat: 0,
+        carbs: 0,
         weight: 50,
     };
     const hamburger = {
@@ -120,7 +120,7 @@ export default function Home() {
         } else if (text.includes("salad")) {
             setDialog("salad");
             setTurn(2);
-            return "Adding 1 caesar salad. Do you want to add more items?";
+            return "Thank you would you like to record anything else? Please specify.";
         } else if (!dialog) {
             return "I didn't understand that.";
         }
@@ -142,16 +142,14 @@ export default function Home() {
                 switch (turn) {
                     case 1: //"Add pizza"
                         return "Thank you would you like to record anything else? Please specify.";
-                    case 2: //"yes"
-                        return "What else would you like to add?";
-                    case 3: //"A glass of water"
+                    case 2: //"yes, a glass of water""
                         return "Thank you would you like to record anything else? Please specify.";
-                    case 4: //"no"
-                        return "To confirm, you had 1 slice of cheese pizza, 1 glass of water";
-                    case 5: //"yes"
+                    case 3: //"no"
+                        return "To confirm, you had 1 slice of cheese pizza and 1 glass of water and nothing else. Is that correct?";
+                    case 4: //"yes"
                         addMeal(pizza_slice);
                         updateWaterLevel(1);
-                        return "Ok, I'm done recording your meal";
+                        return "Thank you! Your food and water intake have been updated. Have a healthy day!";
                 }
             case "cheeseburger":
                 switch (turn) {
@@ -160,29 +158,25 @@ export default function Home() {
                     case 2: //"no"
                         return "To confirm you had 1 cheeseburger";
                     case 3: //"no, i want to change"
-                        return "Would you like to remove or add items?";
-                    case 4: //"i want to remove an item"
-                        return "What would you like to remove?";
-                    case 5: //"the cheeseburger"
-                        return "Ok, I removed it. Do you want to add more items?";
-                    case 6: //"yes"
-                        return "What else would you like to add?";
-                    case 7: //"a hamburger"
+                        return "How would you like to change your meal? Please respond with what you'd like to add or remove.";
+                    case 4: //"remove the cheeseburger"
+                        return "Ok, I removed it. Anything else you'd like to add to or remove from the meal?";
+                    case 5: //"yes, a hamburger"
                         return "Thank you would you like to record anything else? Please specify.";
-                    case 8: //"no"
-                        return "To confirm, you had 1 hamburger";
-                    case 9: //"yes"
+                    case 6: //"no"
+                        return "To confirm, you had 1 hamburger and nothing else. Is that correct?";
+                    case 7: //"yes"
                         addMeal(hamburger);
-                        return "Ok, I'm done recording your meal";
+                        return "Thank you! Your food and water intake have been updated. Have a healthy day!";
                 }
             case "salad":
                 switch (turn) {
-                    case 1: //"Add small caesar salad"
-                        return "Adding 1 caesar salad. Do you want to add more items?";
+                    case 1: //"Add a small caesar salad"
+                        return "Thank you would you like to record anything else? Please specify.";;
                     case 2: //"no"
-                        return "To confirm, you had 1 caesar salad";
+                        return "To confirm, you had 1 caesar salad and nothing else. Is that correct?";
                     case 3: //"No, I want to cancel"
-                        return "Ok done, I cancelled your meal";
+                        return "No worries! I cancelled your meal.";
                 }
         }
 

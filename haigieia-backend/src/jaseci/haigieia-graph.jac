@@ -157,7 +157,7 @@ node confirmation:dialogue_state {
         for i = 0 to i < visitor.wlk_ctx["entities"]["pairs"].length by i+=1 {
             meal_string += visitor.wlk_ctx["entities"]["pairs"][i][0][1] + " " + visitor.wlk_ctx["entities"]["pairs"][i][1][1] + " and ";
         }
-        visitor.response = "You had " + meal_string + "nothing else. Is that correct?";
+        visitor.response = "To confirm, you had " + meal_string + "nothing else. Is that correct?";
     }
 }
 
@@ -208,7 +208,7 @@ node meal_canceled:dialogue_state{
         if (visitor.wlk_ctx["prev_state"]): visitor.wlk_ctx["respond"] = true;
     }
     can nlg {
-        visitor.response = "No worries! Your current meal recording session has been canceled.";
+        visitor.response = "No worries! I cancelled your meal.";
     }
 }
 
@@ -257,7 +257,7 @@ node remove:dialogue_state {
         visitor.wlk_ctx["prev_state"] = here;
     }
     can nlg {
-       visitor.response = "Removed! Anything else you'd like to add to or remove from the meal?";
+       visitor.response = "Ok I removed it. Anything else you'd like to add to or remove from the meal?";
     }
 }
 
