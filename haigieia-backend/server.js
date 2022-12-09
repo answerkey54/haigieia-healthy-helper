@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
   res.send('Haigeia Backend Running')
 })
 
-app.post('/audio', (req, res) => 
+app.post('/audio', (req, res) => {
   var path = req.body["path"]
   var spawn = require("child_process").spawn;
   var python = spawn('python', ["./src/speech-to-text/stt.py", path, "base"]);
@@ -30,16 +30,15 @@ app.post('/audio', (req, res) =>
       },
       "name": "talk"
     }
-    const repsonse = await fetch("http://localhost/8000/walker-run",{
+    const repsonse = fetch("http://localhost/8000/walker-run", {
       method: 'post',
       body: JSON.stringify(body),
       headers: {
         "Content-type": "application/json; charset=UTF-8",
         'Authorization': `token ${token}`
         }
-    });
-    const data = await response.json();
-    res.send(data.toString())
+      }).then((response) => response.json())
+      .then((data) => res.send(data.toString()));
   });
 
   
@@ -52,7 +51,7 @@ app.post('/audio', (req, res) =>
   })
 });
 
-app.post('/text', (req, res) => 
+app.post('/text', (req, res) => {
   // make sure to correctly formulate the body and the endpoint
   var message = req.body["message"]
   const body  = {
@@ -61,16 +60,15 @@ app.post('/text', (req, res) =>
     },
     "name": "talk"
   }
-  const repsonse = await fetch("http://localhost/8000/walker-run",{
+  const repsonse = fetch("http://localhost/8000/walker-run", {
     method: 'post',
     body: JSON.stringify(body),
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       'Authorization': `token ${token}`
       }
-  });
-  const data = await response.json();
-  res.send(data.toString())
+  }).then((response) => response.json())
+    .then((data) => res.send(data.toString()));
 });
 
 
