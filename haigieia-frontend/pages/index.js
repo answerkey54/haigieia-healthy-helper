@@ -55,10 +55,24 @@ export default function Home() {
         ]);
         scrollIntoView();
         form.setFieldValue("text", "");
-        // if text contains 'water' call updateWaterGoal from useDatabase
-        var response = generateResponse(text);
-        // wait 1-2 seconds to simulate a delay in the response
-        var timeout = Math.floor(Math.random() * 1000) + 1000;
+        // make a request to an expressjs server running on localhost:5000 with the user's input text
+        var response = fetch("http://localhost:5000/dialogflow", { 
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ text: text }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                console.log(data);
+                return data.text;
+            })
+            .catch((err) => {
+                console.log(err);
+                return "Sorry, I didn't get that.";
+            });
+        // wait for the response from the server
 
         setTimeout(() => {
             setConversation((conversation) => [
@@ -69,118 +83,6 @@ export default function Home() {
         }, timeout);
 
         console.log(conversation);
-    };
-
-    //Mocking demo functions + state
-    const [dialog, setDialog] = useState(null);
-    const [turn, setTurn] = useState(1);
-
-    const pizza_slice = {
-        item: "Pizza Slice",
-        calories: 300,
-        protein: 7,
-        fat: 17,
-        carbs: 10,
-        weight: 100,
-    };
-    const cheeseburger = {
-        item: "Cheeseburger",
-        calories: 500,
-        protein: 18,
-        fat: 23,
-        carbs: 16,
-        weight: 200,
-    };
-    const salad = {
-        item: "Salad",
-        calories: 100,
-        protein: 3,
-        fat: 0,
-        carbs: 0,
-        weight: 50,
-    };
-    const hamburger = {
-        item: "Hamburger",
-        calories: 400,
-        protein: 17,
-        fat: 19,
-        carbs: 15,
-        weight: 150,
-    };
-
-    function generateResponse(text) {
-        if (text.includes("pizza")) {
-            setDialog("pizza");
-            setTurn(2);
-            return "Thank you would you like to record anything else? Please specify.";
-        } else if (text.includes("cheeseburger") && turn <= 3) {
-            setDialog("cheeseburger");
-            setTurn(2);
-            return "Thank you would you like to record anything else? Please specify.";
-        } else if (text.includes("salad")) {
-            setDialog("salad");
-            setTurn(2);
-            return "Thank you would you like to record anything else? Please specify.";
-        } else if (!dialog) {
-            return "I didn't understand that.";
-        }
-        //Run Dialog
-        const response = mockDemo(turn);
-        setTurn(turn + 1);
-        if (response.includes("done")) {
-            setDialog(null);
-            setTurn(1);
-        }
-        return response;
-    }
-
-    //Run through adding a slice of cheese pizza and a glass of water
-    const mockDemo = (turn) => {
-        console.log(turn);
-        switch (dialog) {
-            case "pizza":
-                switch (turn) {
-                    case 1: //"Add pizza"
-                        return "Thank you would you like to record anything else? Please specify.";
-                    case 2: //"yes, a glass of water""
-                        return "Thank you would you like to record anything else? Please specify.";
-                    case 3: //"no"
-                        return "To confirm, you had 1 slice of cheese pizza and 1 glass of water and nothing else. Is that correct?";
-                    case 4: //"yes"
-                        addMeal(pizza_slice);
-                        updateWaterLevel(1);
-                        return "Thank you! Your food and water intake have been updated. Have a healthy day!";
-                }
-            case "cheeseburger":
-                switch (turn) {
-                    case 1: //"I ate a cheeseburger"
-                        return "Thank you would you like to record anything else? Please specify.";
-                    case 2: //"no"
-                        return "To confirm you had 1 cheeseburger";
-                    case 3: //"no, i want to change"
-                        return "How would you like to change your meal? Please respond with what you'd like to add or remove.";
-                    case 4: //"remove the cheeseburger"
-                        return "Ok, I removed it. Anything else you'd like to add to or remove from the meal?";
-                    case 5: //"yes, a hamburger"
-                        return "Thank you would you like to record anything else? Please specify.";
-                    case 6: //"no"
-                        return "To confirm, you had 1 hamburger and nothing else. Is that correct?";
-                    case 7: //"yes"
-                        addMeal(hamburger);
-                        return "Thank you! Your food and water intake have been updated. Have a healthy day!";
-                }
-            case "salad":
-                switch (turn) {
-                    case 1: //"Add a small caesar salad"
-                        return "Thank you would you like to record anything else? Please specify.";;
-                    case 2: //"no"
-                        return "To confirm, you had 1 caesar salad and nothing else. Is that correct?";
-                    case 3: //"No, I want to cancel"
-                        return "No worries! I cancelled your meal.";
-                }
-        }
-
-        return "I didn't get that";
     };
 
     const Conversation = conversation.map((item, index) => (
