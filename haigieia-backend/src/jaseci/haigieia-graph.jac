@@ -174,7 +174,7 @@ node meal_confirmed:dialogue_state{
             has food_url = "https://api.nal.usda.gov/fdc/v1/foods/search?api_key=JZfAg8Eu8kWcNUca5PVTnvEyFjNJioCYNknNWdw9";
             has headers = {"Content-Type": "application/json"};
             has data = {"query": ent_text};
-            nutrition_response = request.get(url ,data , headers);
+            nutrition_response = request.get(food_url ,data , headers);
             for nutrient in nutrition_response["foods"]["foodNutrients"]{
             
                 if nutrient["name"] == "calories"{
